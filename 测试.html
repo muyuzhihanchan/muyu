@@ -1,0 +1,7417 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合肥市人工智能企业分布热力图</title>
+    <meta name="description" content="合肥市人工智能企业地理分布热力图，包含企业基本信息与行业分类">
+    <meta name="keywords" content="合肥,人工智能,企业分布,热力图,产业地图">
+
+     <meta property="og:title" content="合肥市人工智能企业分布热力图">
+    <meta property="og:description" content="可视化展示合肥市人工智能企业的地理分布情况">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com/hefei-ai-map">
+    <meta property="og:image" content="https://yourdomain.com/images/hefei-ai-preview.jpg">
+
+
+
+    <script>
+        L_NO_TOUCH = false;
+        L_DISABLE_3D = false;
+    </script>
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+    <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <style>
+         html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    
+    main {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+        #map_709be7e1470feb5f5fb755f5d199a963 {
+            position: relative;
+            width: 100.0%;
+            height: 100.0%;
+            left: 0.0%;
+            top: 0.0%;
+        }
+        .leaflet-container { font-size: 1rem; }
+        
+        /* 搜索框样式 */
+        .search-container {
+            position: fixed;
+            top: 70px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            width: 300px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .search-button {
+            width: 100%;
+            padding: 8px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .filter-button {
+            width: 100%;
+            padding: 8px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .search-results {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .search-result-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .search-result-item:hover {
+            background-color: #f5f5f5;
+        }
+
+
+        
+        
+        /* 筛选弹窗样式 */
+        #filter-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 10000;
+            width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .filter-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+        
+        .close-modal:hover {
+            color: #333;
+        }
+        
+        .filter-options {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        
+        .filter-option {
+            margin-bottom: 8px;
+        }
+        
+        .filter-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .clear-filters {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .apply-filters {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* 分类统计样式 */
+        .category-stats {
+            position: fixed;
+            top: 70px;
+            right: 5px;
+            width: 200px;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 9999;
+            overflow-y: auto;
+            max-height: 75vh;
+            font-size: 14px;
+        }
+        
+        .category-stats h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .category-item {
+            padding: 8px 0;
+            cursor: pointer;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .category-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .category-item.active {
+            background-color: #e6f7ff;
+            border-left: 3px solid #1890ff;
+            padding-left: 5px;
+            font-weight: bold;
+        }
+        
+        .category-count {
+            font-weight: bold;
+            color: #1890ff;
+        }
+        
+        /* 标题样式 */
+        .title-container {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 1vh 3vw;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-size: clamp(16px, 4vw, 24px);
+            font-weight: bold;
+            color: #2c3e50;
+            z-index: 9999;
+            text-align: center;
+            max-width: 95%;
+            white-space: nowrap;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+    </style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.7/dist/leaflet-search.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-search@2.9.7/dist/leaflet-search.min.css"/>
+    <script src="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet_heat.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-tag-filter-button/src/leaflet-tag-filter-button.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-tag-filter-button/src/leaflet-tag-filter-button.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/css-ripple-effect@1.0.5/dist/ripple.min.css"/>
+</head>
+<body>
+   
+<main>
+     <!-- 标题 -->
+    <div class="title-container">
+        安徽省人工智能企业热力图
+    </div>
+  </main>
+
+    <!-- 搜索框 -->
+   <div class="search-container">
+    <input type="text" class="search-input" placeholder="搜索企业名称...">
+    <button class="search-button">搜索</button>
+    <button class="filter-button">筛选</button>
+  
+    <div class="search-results"></div>
+</div>
+    
+ <div id="filter-modal" aria-hidden="true" style="display: none;">...</div>
+<div class="folium-map" id="map_709be7e1470feb5f5fb755f5d199a963"></div>
+  
+
+    <!-- 筛选弹窗 -->
+    <div id="filter-modal">
+        <div class="filter-header">
+            <h3 class="filter-title">筛选行业</h3>
+            <span class="close-modal" id="close-modal">&times;</span>
+        </div>
+        <div class="filter-options">
+            <div class="filter-option">
+                <input type="checkbox" id="filter-all" value="全部">
+                <label for="filter-all">全部行业</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-cloud" value="云计算">
+                <label for="filter-cloud">云计算</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-medical" value="医疗">
+                <label for="filter-medical">医疗</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-construction" value="建筑">
+                <label for="filter-construction">建筑</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-drone" value="无人机">
+                <label for="filter-drone">无人机</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-robot" value="机器人">
+                <label for="filter-robot">机器人</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-detection" value="检测">
+                <label for="filter-detection">检测</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-water" value="水电">
+                <label for="filter-water">水电</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-iot" value="物联网">
+                <label for="filter-iot">物联网</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-bio" value="生物">
+                <label for="filter-bio">生物</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-chip" value="芯片">
+                <label for="filter-chip">芯片</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-vision" value="视觉">
+                <label for="filter-vision">视觉</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-voice" value="语音">
+                <label for="filter-voice">语音</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-communication" value="通信">
+                <label for="filter-communication">通信</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-quantum" value="量子">
+                <label for="filter-quantum">量子</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-driving" value="驾驶">
+                <label for="filter-driving">驾驶</label>
+            </div>
+            <div class="filter-option">
+                <input type="checkbox" id="filter-other" value="其他">
+                <label for="filter-other">其他</label>
+            </div>
+        </div>
+        <div class="filter-actions">
+            <button class="clear-filters" id="clear-filters">清空</button>
+            <button class="apply-filters" id="apply-filters">应用</button>
+        </div>
+
+
+
+    </div>
+    
+    <!-- 分类统计 -->
+    <div class="category-stats">
+        <h4>企业分类统计</h4>
+        <ul class="category-list">
+            <li class="category-item active" data-category="全部">全部行业 <span class="category-count">442</span></li>
+            <li class="category-item" data-category="云计算">云计算 <span class="category-count">55</span></li>
+            <li class="category-item" data-category="医疗">医疗 <span class="category-count">60</span></li>
+            <li class="category-item" data-category="建筑">建筑 <span class="category-count">95</span></li>
+            <li class="category-item" data-category="无人机">无人机 <span class="category-count">12</span></li>
+            <li class="category-item" data-category="机器人">机器人 <span class="category-count">105</span></li>
+            <li class="category-item" data-category="检测">检测 <span class="category-count">38</span></li>
+            <li class="category-item" data-category="水电">水电 <span class="category-count">6</span></li>
+            <li class="category-item" data-category="物联网">物联网 <span class="category-count">151</span></li>
+            <li class="category-item" data-category="生物">生物 <span class="category-count">7</span></li>
+            <li class="category-item" data-category="芯片">芯片 <span class="category-count">21</span></li>
+            <li class="category-item" data-category="视觉">视觉 <span class="category-count">6</span></li>
+            <li class="category-item" data-category="语音">语音 <span class="category-count">10</span></li>
+            <li class="category-item" data-category="通信">通信 <span class="category-count">110</span></li>
+            <li class="category-item" data-category="量子">量子 <span class="category-count">9</span></li>
+            <li class="category-item" data-category="驾驶">驾驶 <span class="category-count">7</span></li>
+            <li class="category-item" data-category="其他">其他 <span class="category-count">95</span></li>
+        </ul>
+    </div>
+    
+    <div class="folium-map" id="map_709be7e1470feb5f5fb755f5d199a963"></div>
+    
+
+<div class="share-buttons">
+        <button id="share-wechat" title="微信分享">微信</button>
+        <button id="share-qq" title="QQ分享">QQ</button>
+        <button id="copy-link" title="复制链接">复制链接</button>
+    </div>
+
+
+    <script>
+
+
+
+        // 企业数据
+        var companies = [
+  {
+    "name": "安徽华米健康科技有限公司",
+    "position": [
+      31.833537,
+      117.100707
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2015/12/28",
+    "legalPerson": "范美辉",
+    "capital": "6000万美元",
+    "link": "https://www.qcc.com/firm/e5fa0340d967af4785dd1595e0e35ded.html"
+  },
+  {
+    "name": "安徽博清机器人科技有限公司",
+    "position": [
+      31.779072,
+      117.362023
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2017/9/5",
+    "legalPerson": "冯消冰",
+    "capital": "1200万元",
+    "link": "https://www.qcc.com/firm/14f12afa041fc1e1d8968c79bb8a2278.html"
+  },
+  {
+    "name": "合肥云迅汇智信息科技有限公司",
+    "position": [
+      31.83688,
+      117.138698
+    ],
+    "tags": [
+      "医疗",
+      "通信",
+      "云计算",
+      "物联网"
+    ],
+    "date": "2018/12/7",
+    "legalPerson": "王士彬",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/931bda96a649623a32e9966920713ab0.html"
+  },
+  {
+    "name": "安徽森诺创恒信息科技有限公司",
+    "position": [
+      31.934963,
+      117.264389
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2016/1/4",
+    "legalPerson": "李剑",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/5cc6661e754fb7d16806de71ba903a8f.html"
+  },
+  {
+    "name": "安徽高哲信息技术有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "机器人",
+      "无人机"
+    ],
+    "date": "2016/10/28",
+    "legalPerson": "武勇",
+    "capital": "3181.8182万元",
+    "link": "https://www.qcc.com/firm/b33a19dac56ddb085cff25be0b50497a.html"
+  },
+  {
+    "name": "安徽中讯科技发展股份有限公司",
+    "position": [
+      31.827378,
+      117.193715
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "1997/6/6",
+    "legalPerson": "曹峰",
+    "capital": "1009万元",
+    "link": "https://www.qcc.com/firm/220e3a1bc59a2cc026bc8b17bdab355c.html"
+  },
+  {
+    "name": "安徽云磐建筑劳务有限公司",
+    "position": [
+      31.897508,
+      117.314692
+    ],
+    "tags": [
+      "水电",
+      "建筑"
+    ],
+    "date": "2023/2/21",
+    "legalPerson": "耿杰",
+    "capital": "0.9999万元",
+    "link": "https://www.qcc.com/firm/86c0070a2d46acca5354c13956a3bb97.html"
+  },
+  {
+    "name": "安徽声云智能科技有限公司",
+    "position": [
+      31.828095,
+      117.205865
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2018/1/31",
+    "legalPerson": "班荣军",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/d88794187a920fadbf86c7a7561db5e1.html"
+  },
+  {
+    "name": "合肥大易墅装饰设计有限公司",
+    "position": [
+      31.824602,
+      117.301376
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2016/7/15",
+    "legalPerson": "赵云",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/a3d51eda1e69c6ef8e80b865d7f3ab03.html"
+  },
+  {
+    "name": "合肥指南针电子科技有限责任公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "机器人",
+      "医疗",
+      "通信",
+      "物联网"
+    ],
+    "date": "2006/10/18",
+    "legalPerson": "石晔",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/f0c106de6aae869060c693863ed6d09f.html"
+  },
+  {
+    "name": "合肥天帷信息安全技术有限公司工会委员会",
+    "position": [
+      31.805036,
+      117.223803
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2020/12/18",
+    "legalPerson": "张保护",
+    "capital": "-",
+    "link": "https://www.qcc.com/firm/g19c38d86f3bff9c149cfe16d412ee17.html"
+  },
+  {
+    "name": "科大讯飞股份有限公司",
+    "position": [
+      31.831282,
+      117.144501
+    ],
+    "tags": [
+      "医疗",
+      "通信"
+    ],
+    "date": "1999/12/30",
+    "legalPerson": "刘庆峰",
+    "capital": "231173.4185万元",
+    "link": "https://www.qcc.com/firm/a34efdb4b5b7fe1b698316b260dae7ca.html"
+  },
+  {
+    "name": "安徽容知日新科技股份有限公司",
+    "position": [
+      31.827543,
+      117.15704
+    ],
+    "tags": [
+      "云计算",
+      "物联网"
+    ],
+    "date": "2007/8/7",
+    "legalPerson": "聂卫华",
+    "capital": "8742.7353万元",
+    "link": "https://www.qcc.com/firm/f3cededf871c6eb2672bcc4067010c5b.html"
+  },
+  {
+    "name": "安徽华米信息科技有限公司",
+    "position": [
+      31.832138,
+      117.100235
+    ],
+    "tags": [
+      "医疗",
+      "通信",
+      "物联网"
+    ],
+    "date": "2013/12/27",
+    "legalPerson": "黄汪",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/51b54dc12446f5885b8c91dcdeee9530.html"
+  },
+  {
+    "name": "合肥中科类脑智能技术有限公司",
+    "position": [
+      31.829132,
+      117.129244
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2017/9/15",
+    "legalPerson": "刘海峰",
+    "capital": "1353.0303万元",
+    "link": "https://www.qcc.com/firm/9dd553bffc474d1e8f5a75b50cd4e993.html"
+  },
+  {
+    "name": "安徽航天信息有限公司",
+    "position": [
+      31.849235,
+      117.133214
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2009/1/19",
+    "legalPerson": "宋颖",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/acf70229a9b460ce8e0bcc02e9c54522.html"
+  },
+  {
+    "name": "安徽玄离智能科技股份有限公司",
+    "position": [
+      31.848874,
+      117.202806
+    ],
+    "tags": [
+      "机器人",
+      "通信"
+    ],
+    "date": "2016/5/3",
+    "legalPerson": "张梅",
+    "capital": "10000万元",
+    "link": "https://www.qcc.com/firm/769998324ecfcaa5465f98035e6b2d2d.html"
+  },
+  {
+    "name": "合肥赛为智能有限公司",
+    "position": [
+      31.812625,
+      117.134989
+    ],
+    "tags": [
+      "机器人",
+      "通信",
+      "无人机",
+      "物联网"
+    ],
+    "date": "2012/5/16",
+    "legalPerson": "周勇",
+    "capital": "16500万元",
+    "link": "https://www.qcc.com/firm/84411581057c790cb665454995e6336a.html"
+  },
+  {
+    "name": "安徽科力信息产业有限责任公司",
+    "position": [
+      31.841234,
+      117.196975
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "1991/12/18",
+    "legalPerson": "张敏",
+    "capital": "1630.5万元",
+    "link": "https://www.qcc.com/firm/9340d3923565fff44fd9d1814c4688ac.html"
+  },
+  {
+    "name": "合肥海康威视数字技术有限公司",
+    "position": [
+      31.826965,
+      117.135492
+    ],
+    "tags": [
+      "通信",
+      "物联网"
+    ],
+    "date": "2019/8/27",
+    "legalPerson": "徐红畅",
+    "capital": "8000万元",
+    "link": "https://www.qcc.com/firm/06499f4288232b1d50175076b54d7818.html"
+  },
+  {
+    "name": "中科美络科技股份有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "云计算",
+      "通信",
+      "物联网"
+    ],
+    "date": "2014/12/11",
+    "legalPerson": "吴仲城",
+    "capital": "6000万元",
+    "link": "https://www.qcc.com/firm/304cd5054cff6d983e62e7787e177a05.html"
+  },
+  {
+    "name": "安徽听见科技有限公司",
+    "position": [
+      31.785462,
+      117.250122
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2016/3/16",
+    "legalPerson": "胡国平",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/06c822e18c1245f87df144559eb1e122.html"
+  },
+  {
+    "name": "安徽七天网络科技有限公司",
+    "position": [
+      31.893607,
+      117.329593
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2013/8/20",
+    "legalPerson": "王武正",
+    "capital": "1466.0543万元",
+    "link": "https://www.qcc.com/firm/85e141d4a91e233b6505f637f711629f.html"
+  },
+  {
+    "name": "安徽蓓拉智能科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "语音",
+      "通信",
+      "物联网"
+    ],
+    "date": "2019/7/11",
+    "legalPerson": "程和来",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/dc4a7e92760f6ff938126941f327aa17.html"
+  },
+  {
+    "name": "安徽博约信息科技股份有限公司",
+    "position": [
+      31.837521,
+      117.137844
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2010/7/30",
+    "legalPerson": "郑中华",
+    "capital": "1094.694万元",
+    "link": "https://www.qcc.com/firm/50feeda2dbab547e92fe508430cf4ca1.html"
+  },
+  {
+    "name": "安徽澄小光智能科技有限公司",
+    "position": [
+      31.882027,
+      117.320373
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2018/4/23",
+    "legalPerson": "洪伟",
+    "capital": "910万元",
+    "link": "https://www.qcc.com/firm/43c95fb807915cc8cdc4c642afe9887b.html"
+  },
+  {
+    "name": "安徽多威尔智能科技股份有限公司",
+    "position": [
+      31.826449,
+      117.148903
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2015/3/2",
+    "legalPerson": "金仁宏",
+    "capital": "3000万元",
+    "link": "https://www.qcc.com/firm/1cb70d82a5763ed01768097953fa4253.html"
+  },
+  {
+    "name": "安徽方正北斗电子科技有限公司",
+    "position": [
+      31.882027,
+      117.320373
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2013/7/2",
+    "legalPerson": "王兴文",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/38d228fe1049811c29954c547b387ead.html"
+  },
+  {
+    "name": "安徽国健智能科技有限公司",
+    "position": [
+      31.882027,
+      117.320373
+    ],
+    "tags": [
+      "医疗",
+      "云计算"
+    ],
+    "date": "2017/11/17",
+    "legalPerson": "张娟",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/0444ab4db9c11348dcc9da8c8326a0d0.html"
+  },
+  {
+    "name": "安徽航天信息科技有限公司",
+    "position": [
+      31.849866,
+      117.133412
+    ],
+    "tags": [
+      "云计算",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2003/12/25",
+    "legalPerson": "宋颖",
+    "capital": "3200万元",
+    "link": "https://www.qcc.com/firm/dbdb169e31fd36715071cec8366052e8.html"
+  },
+  {
+    "name": "安徽华速达电子科技有限公司",
+    "position": [
+      31.825553,
+      117.149667
+    ],
+    "tags": [
+      "通信",
+      "物联网"
+    ],
+    "date": "2009/12/11",
+    "legalPerson": "李巍",
+    "capital": "1001万元",
+    "link": "https://www.qcc.com/firm/dc51fba1639e7631c35176dad169a133.html"
+  },
+  {
+    "name": "安徽汇迈信息科技有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "医疗",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2015/10/8",
+    "legalPerson": "王希锐",
+    "capital": "1008万元",
+    "link": "https://www.qcc.com/firm/c03ada4ca9079b4884cbdde145e01269.html"
+  },
+  {
+    "name": "安徽劲威物联网科技有限公司",
+    "position": [
+      31.785462,
+      117.250122
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2018/1/16",
+    "legalPerson": "韦競",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/6e87e0571ac21ac76490454b617380e4.html"
+  },
+  {
+    "name": "安徽卷云信息技术有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2016/3/9",
+    "legalPerson": "王勇",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/006666e71ed082777b1eeb2520f1dc0a.html"
+  },
+  {
+    "name": "讯飞医疗科技股份有限公司",
+    "position": [
+      31.83331,
+      117.151511
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2016/5/13",
+    "legalPerson": "刘庆峰",
+    "capital": "11384.2683万元",
+    "link": "https://www.qcc.com/firm/3a92637889db32585bfea39318ab7393.html"
+  },
+  {
+    "name": "安徽科微智能科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2012/7/17",
+    "legalPerson": "张新钊",
+    "capital": "1139.94万元",
+    "link": "https://www.qcc.com/firm/a60d1a5f55187f09d90dcf628dca5c66.html"
+  },
+  {
+    "name": "安徽科讯金服科技有限公司",
+    "position": [
+      31.831292,
+      117.144258
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2010/3/22",
+    "legalPerson": "沈超锋",
+    "capital": "4244.8977万元",
+    "link": "https://www.qcc.com/firm/4f5722b13284a70d0dedcec007c81972.html"
+  },
+  {
+    "name": "安徽绿舟科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2015/9/6",
+    "legalPerson": "吴如伟",
+    "capital": "1464.935万元",
+    "link": "https://www.qcc.com/firm/3f75c5df8afd405fe49e610795f4cae9.html"
+  },
+  {
+    "name": "安徽那得科技有限公司",
+    "position": [
+      31.854845,
+      117.204286
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/3/29",
+    "legalPerson": "宫欣欣",
+    "capital": "10万元",
+    "link": "https://www.qcc.com/firm/deb548f11ebe6c2e43f985a2e084db9f.html"
+  },
+  {
+    "name": "安徽仁昊智能科技有限公司",
+    "position": [
+      31.817155,
+      117.162944
+    ],
+    "tags": [
+      "语音",
+      "物联网"
+    ],
+    "date": "2017/10/19",
+    "legalPerson": "张国发",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/cf3cfb71003b145029759f4f054085c1.html"
+  },
+  {
+    "name": "安徽三联交通应用技术股份有限公司",
+    "position": [
+      31.828529,
+      117.147398
+    ],
+    "tags": [
+      "驾驶",
+      "建筑"
+    ],
+    "date": "2005/12/5",
+    "legalPerson": "王江波",
+    "capital": "4308.34万元",
+    "link": "https://www.qcc.com/firm/4420bb5ca97cf5cf455137f279e23e90.html"
+  },
+  {
+    "name": "安徽省信盾科技有限公司",
+    "position": [
+      31.819177,
+      117.123101
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/5/5",
+    "legalPerson": "陈林",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/7bf7e7523facb1fe3f99870a34806e19.html"
+  },
+  {
+    "name": "安徽天盛智能科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2015/7/30",
+    "legalPerson": "王珏",
+    "capital": "2020万元",
+    "link": "https://www.qcc.com/firm/6a973628fdc5d239c3bace7bd6342127.html"
+  },
+  {
+    "name": "安徽讯呼信息科技有限公司",
+    "position": [
+      31.837553,
+      117.147263
+    ],
+    "tags": [
+      "语音",
+      "物联网"
+    ],
+    "date": "2015/6/18",
+    "legalPerson": "程松林",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/29d3c99b247dfd8e4380be57421edae4.html"
+  },
+  {
+    "name": "安徽一流云停科技有限公司",
+    "position": [
+      31.826449,
+      117.148903
+    ],
+    "tags": [
+      "云计算",
+      "物联网"
+    ],
+    "date": "2017/8/8",
+    "legalPerson": "金仁宏",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/5e6664bed4c5381b873007681f8e9a4c.html"
+  },
+  {
+    "name": "安徽云玺量子科技有限公司",
+    "position": [
+      31.829112,
+      117.129746
+    ],
+    "tags": [
+      "云计算",
+      "量子",
+      "物联网"
+    ],
+    "date": "2016/9/18",
+    "legalPerson": "童迎伟",
+    "capital": "3163.2988万元",
+    "link": "https://www.qcc.com/firm/48cf32cc2311df695cc73b1f818579cf.html"
+  },
+  {
+    "name": "安徽科讯智泊科技有限公司",
+    "position": [
+      31.832138,
+      117.100235
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2018/8/29",
+    "legalPerson": "丁国亮",
+    "capital": "1731.6017万元",
+    "link": "https://www.qcc.com/firm/b8224c6e8fb625a932b9bf628aa84609.html"
+  },
+  {
+    "name": "安徽智时代科技有限公司",
+    "position": [
+      31.865698,
+      117.150495
+    ],
+    "tags": [
+      "云计算"
+    ],
+    "date": "2017/11/27",
+    "legalPerson": "张宝龙",
+    "capital": "600万元",
+    "link": "https://www.qcc.com/firm/56dabe1b8acffd09c13d94758744e368.html"
+  },
+  {
+    "name": "安徽智时代软件服务有限公司",
+    "position": [
+      31.852919,
+      117.20775
+    ],
+    "tags": [
+      "云计算"
+    ],
+    "date": "2016/5/20",
+    "legalPerson": "张宝龙",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/4fd7e0cb3e42e5e471d4be57178f4b64.html"
+  },
+  {
+    "name": "安徽卓上智能科技有限公司",
+    "position": [
+      31.818724,
+      117.181847
+    ],
+    "tags": [
+      "检测",
+      "建筑"
+    ],
+    "date": "2014/5/20",
+    "legalPerson": "李蓬",
+    "capital": "600万元",
+    "link": "https://www.qcc.com/firm/ddb44314001aa3bb705701437bec51c6.html"
+  },
+  {
+    "name": "安徽宝信信息科技有限公司",
+    "position": [
+      31.882027,
+      117.320373
+    ],
+    "tags": [
+      "机器人",
+      "语音",
+      "驾驶",
+      "建筑"
+    ],
+    "date": "2012/12/17",
+    "legalPerson": "李广垒",
+    "capital": "1333.33万元",
+    "link": "https://www.qcc.com/firm/45a69b504c50b5b9a351d1c2b6253741.html"
+  },
+  {
+    "name": "安徽创世科技股份有限公司",
+    "position": [
+      31.842342,
+      117.196535
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2002/6/27",
+    "legalPerson": "翁世华",
+    "capital": "3966.5706万元",
+    "link": "https://www.qcc.com/firm/10be441d931df062c77ad4b91ddede3b.html"
+  },
+  {
+    "name": "合肥飞尔智能科技有限公司",
+    "position": [
+      31.819785,
+      117.123896
+    ],
+    "tags": [
+      "芯片"
+    ],
+    "date": "2019/1/9",
+    "legalPerson": "FANG LU",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/0ad4bda3ce4e70fc7c9cad059fb058c8.html"
+  },
+  {
+    "name": "安徽国通亿创科技股份有限公司",
+    "position": [
+      31.835437,
+      117.147534
+    ],
+    "tags": [
+      "通信",
+      "建筑"
+    ],
+    "date": "2005/3/22",
+    "legalPerson": "柳世祥",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/a53697ba7fbcd320846e3b4472473507.html"
+  },
+  {
+    "name": "合肥汉亚信息技术有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2005/4/15",
+    "legalPerson": "陈莉群",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/1823cbc612bbd0df0c9ab568c7992ea4.html"
+  },
+  {
+    "name": "合肥进毅智能技术有限公司",
+    "position": [
+      31.85503,
+      117.210111
+    ],
+    "tags": [
+      "通信",
+      "建筑"
+    ],
+    "date": "2000/3/20",
+    "legalPerson": "王鹏",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/7b842877af95ef9c1fd43ddd1cbcdded.html"
+  },
+  {
+    "name": "合肥井创数字科技有限公司",
+    "position": [
+      31.84907,
+      117.204115
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2018/9/30",
+    "legalPerson": "许晓婷",
+    "capital": "625万元",
+    "link": "https://www.qcc.com/firm/b0903dbd7a1226c4eb671bcdc96c1ea3.html"
+  },
+  {
+    "name": "合肥融讯电子科技有限公司",
+    "position": [
+      31.826498,
+      117.194563
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2006/8/24",
+    "legalPerson": "陈锐",
+    "capital": "3016万元",
+    "link": "https://www.qcc.com/firm/323aa0ff42a01b52562fc34fbb471b9c.html"
+  },
+  {
+    "name": "合肥星空物联信息科技有限公司",
+    "position": [
+      31.835458,
+      117.14829
+    ],
+    "tags": [
+      "机器人",
+      "通信",
+      "物联网"
+    ],
+    "date": "2016/7/22",
+    "legalPerson": "周庐",
+    "capital": "233.3208万元",
+    "link": "https://www.qcc.com/firm/727af5196edbb30b3b75cbdfbc43f602.html"
+  },
+  {
+    "name": "合肥讯飞数码科技有限公司",
+    "position": [
+      31.831282,
+      117.144501
+    ],
+    "tags": [
+      "语音"
+    ],
+    "date": "2006/4/18",
+    "legalPerson": "占建波",
+    "capital": "8792.5万元",
+    "link": "https://www.qcc.com/firm/d6ea1f1398d490e122b904ee07b63568.html"
+  },
+  {
+    "name": "合肥尧威智能科技股份有限公司",
+    "position": [
+      31.826449,
+      117.148903
+    ],
+    "tags": [
+      "医疗",
+      "云计算",
+      "物联网"
+    ],
+    "date": "2016/1/6",
+    "legalPerson": "金仁宏",
+    "capital": "200万元",
+    "link": "https://www.qcc.com/firm/c36d25426ed0adb008ec88a1d6724af9.html"
+  },
+  {
+    "name": "合肥智企达信息科技有限公司",
+    "position": [
+      31.801413,
+      117.215355
+    ],
+    "tags": [
+      "语音"
+    ],
+    "date": "2019/4/17",
+    "legalPerson": "潘光亮",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/b4772e827cd2abd89365e82f56203c21.html"
+  },
+  {
+    "name": "科讯嘉联信息技术有限公司",
+    "position": [
+      31.832849,
+      117.094797
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2016/2/17",
+    "legalPerson": "徐景明",
+    "capital": "5300万元",
+    "link": "https://www.qcc.com/firm/16a42d76368c03700c6ba16a8e15e126.html"
+  },
+  {
+    "name": "安徽咪鼠科技有限公司",
+    "position": [
+      31.833255,
+      117.093427
+    ],
+    "tags": [
+      "芯片",
+      "建筑"
+    ],
+    "date": "2015/5/15",
+    "legalPerson": "冯海洪",
+    "capital": "708.59万元",
+    "link": "https://www.qcc.com/firm/46fccbf8cd0a42b2438214c93e5dff8a.html"
+  },
+  {
+    "name": "安徽清新互联信息科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "通信",
+      "物联网",
+      "机器人",
+      "云计算",
+      "建筑"
+    ],
+    "date": "2014/7/22",
+    "legalPerson": "尼秀明",
+    "capital": "1485.9835万元",
+    "link": "https://www.qcc.com/firm/71c00b6da039f3710c62cadcd71b3169.html"
+  },
+  {
+    "name": "安徽文康科技有限公司",
+    "position": [
+      31.823093,
+      117.200795
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2003/4/15",
+    "legalPerson": "徐秋红",
+    "capital": "1114.97万元",
+    "link": "https://www.qcc.com/firm/0687133ceb9f81500734ca072069d908.html"
+  },
+  {
+    "name": "合肥冲之科技有限公司",
+    "position": [
+      31.791463,
+      117.219931
+    ],
+    "tags": [
+      "通信",
+      "建筑"
+    ],
+    "date": "2016/2/18",
+    "legalPerson": "王蓉",
+    "capital": "3万元",
+    "link": "https://www.qcc.com/firm/d83981b9bd8f61eba177449a8dbd8ea6.html"
+  },
+  {
+    "name": "安徽大洋自动化科技有限公司",
+    "position": [
+      31.801413,
+      117.215355
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2003/8/28",
+    "legalPerson": "尹建辉",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/4207eac2bb7a61dd10192faa346e937e.html"
+  },
+  {
+    "name": "合肥杜威智能科技股份有限公司",
+    "position": [
+      31.785462,
+      117.250122
+    ],
+    "tags": [
+      "检测",
+      "物联网",
+      "机器人",
+      "通信",
+      "芯片"
+    ],
+    "date": "1996/8/26",
+    "legalPerson": "陈剑云",
+    "capital": "900万元",
+    "link": "https://www.qcc.com/firm/fbc9b9c2cc7e62f413a3c6cce791fa24.html"
+  },
+  {
+    "name": "安徽中科昊音智能科技有限公司",
+    "position": [
+      31.831537,
+      117.100729
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/1/4",
+    "legalPerson": "刘敏",
+    "capital": "1268.5318万元",
+    "link": "https://www.qcc.com/firm/363c58f73b7384266917c71c04ce0d74.html"
+  },
+  {
+    "name": "安徽爱速亿信息科技有限公司",
+    "position": [
+      31.850632,
+      117.202966
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2018/3/14",
+    "legalPerson": "高薇薇",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/7871f2eb545e7333082061766899c382.html"
+  },
+  {
+    "name": "安徽力瀚科技有限公司",
+    "position": [
+      31.840611,
+      117.198506
+    ],
+    "tags": [
+      "通信",
+      "建筑"
+    ],
+    "date": "2003/9/18",
+    "legalPerson": "周语",
+    "capital": "3722.6277万元",
+    "link": "https://www.qcc.com/firm/69d40c0b309f8f7e63901d2371e2f787.html"
+  },
+  {
+    "name": "安徽智恒信科技股份有限公司",
+    "position": [
+      31.835391,
+      117.137821
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2015/8/13",
+    "legalPerson": "甘松云",
+    "capital": "1550万元",
+    "link": "https://www.qcc.com/firm/5d6c105a2ea32180a1e2aa4277866314.html"
+  },
+  {
+    "name": "合肥亚慕信息科技有限公司",
+    "position": [
+      31.828277,
+      117.125057
+    ],
+    "tags": [
+      "云计算",
+      "物联网"
+    ],
+    "date": "2015/4/3",
+    "legalPerson": "王魁",
+    "capital": "200万元",
+    "link": "https://www.qcc.com/firm/36b097b56d645ab83035a7dad79b2360.html"
+  },
+  {
+    "name": "合肥视尔信息科技有限公司",
+    "position": [
+      31.817701,
+      117.162757
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2010/7/23",
+    "legalPerson": "张向军",
+    "capital": "300万元",
+    "link": "https://www.qcc.com/firm/d5db97073fc9d57eaad538df98cbdbaf.html"
+  },
+  {
+    "name": "安徽鼎韬智能科技有限公司",
+    "position": [
+      31.882027,
+      117.320373
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2018/11/20",
+    "legalPerson": "吴记广",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/05e2da72b668ed19effc6aca18cadbc0.html"
+  },
+  {
+    "name": "合肥金人科技有限公司",
+    "position": [
+      31.837669,
+      117.13503
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/7/17",
+    "legalPerson": "钟生",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/3cb21fae22786064e52b88ea42daacfb.html"
+  },
+  {
+    "name": "合肥新青罗数字技术有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2017/12/18",
+    "legalPerson": "齐志勇",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/13ecf8c80c13e7448fc9335274d9db89.html"
+  },
+  {
+    "name": "合肥厚土科技有限公司",
+    "position": [
+      31.848874,
+      117.202806
+    ],
+    "tags": [
+      "无人机",
+      "医疗",
+      "物联网"
+    ],
+    "date": "2019/1/23",
+    "legalPerson": "白雪",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/3d9f71300c67417120ad4da3fef76682.html"
+  },
+  {
+    "name": "合肥的卢深视科技有限公司",
+    "position": [
+      31.819789,
+      117.123323
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/8/13",
+    "legalPerson": "户磊",
+    "capital": "15000万元",
+    "link": "https://www.qcc.com/firm/8b7dda5f842ca387483731f13a405c5c.html"
+  },
+  {
+    "name": "安徽八千里科技发展有限公司",
+    "position": [
+      31.78758,
+      117.702535
+    ],
+    "tags": [
+      "医疗",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2016/7/22",
+    "legalPerson": "胡仁美",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/4e401c328025d07b8dec71e393736668.html"
+  },
+  {
+    "name": "安徽兰臣信息科技有限公司",
+    "position": [
+      31.842895,
+      117.08235
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2018/7/11",
+    "legalPerson": "张云龙",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/199b38d6fd72807868e5c35e231503e3.html"
+  },
+  {
+    "name": "安徽百信信息技术有限公司",
+    "position": [
+      31.827115,
+      117.148303
+    ],
+    "tags": [
+      "云计算",
+      "通信"
+    ],
+    "date": "2019/7/4",
+    "legalPerson": "王宪朝",
+    "capital": "10000万元",
+    "link": "https://www.qcc.com/firm/cc1d6d1ae659aeeeb9d01f635c54d324.html"
+  },
+  {
+    "name": "安徽超视野智能科技有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "云计算",
+      "物联网"
+    ],
+    "date": "2018/2/11",
+    "legalPerson": "卢青松",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/68946fe152b20f9415a0925f04102eaa.html"
+  },
+  {
+    "name": "合肥英睿系统技术有限公司",
+    "position": [
+      31.842895,
+      117.08235
+    ],
+    "tags": [
+      "通信",
+      "芯片"
+    ],
+    "date": "2017/7/27",
+    "legalPerson": "刘立春",
+    "capital": "10000万元",
+    "link": "https://www.qcc.com/firm/ebaa3aa20aedc1c9740cc5406f31329e.html"
+  },
+  {
+    "name": "合肥中科根云设备管理有限公司",
+    "position": [
+      31.785711,
+      117.250011
+    ],
+    "tags": [
+      "检测"
+    ],
+    "date": "2016/1/18",
+    "legalPerson": "何玉杰",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/a4a38641a38fbacbbf86099697e8a095.html"
+  },
+  {
+    "name": "安徽弦谷智能科技有限公司",
+    "position": [
+      31.882027,
+      117.320373
+    ],
+    "tags": [
+      "检测",
+      "建筑"
+    ],
+    "date": "2018/3/7",
+    "legalPerson": "李非",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/42d9c3f36e27c44ec82ff74a57a7ad67.html"
+  },
+  {
+    "name": "合肥福瞳光电科技有限公司",
+    "position": [
+      31.845527,
+      117.213052
+    ],
+    "tags": [
+      "机器人",
+      "检测"
+    ],
+    "date": "2012/7/30",
+    "legalPerson": "李保生",
+    "capital": "120万元",
+    "link": "https://www.qcc.com/firm/8ecc29b5bdef454f64838fb97d04acfd.html"
+  },
+  {
+    "name": "合肥斡亿信息科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2005/6/15",
+    "legalPerson": "杨虎",
+    "capital": "1200万元",
+    "link": "https://www.qcc.com/firm/ddfbe829fc32ffa7d257d6fb24e4624a.html"
+  },
+  {
+    "name": "合肥市正茂科技有限公司",
+    "position": [
+      31.845227,
+      117.205364
+    ],
+    "tags": [
+      "检测"
+    ],
+    "date": "2000/8/29",
+    "legalPerson": "夏立志",
+    "capital": "6800万元",
+    "link": "https://www.qcc.com/firm/04e6709b0e6136cc6a03167cd944be65.html"
+  },
+  {
+    "name": "合肥润宇科技有限公司",
+    "position": [
+      31.826151,
+      117.104248
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/3/20",
+    "legalPerson": "何园园",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/98a1fa56c92293d56b153cca9ac2e86e.html"
+  },
+  {
+    "name": "卓智网络科技有限公司",
+    "position": [
+      31.838887,
+      117.139309
+    ],
+    "tags": [
+      "云计算",
+      "通信",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2014/12/18",
+    "legalPerson": "薛杰",
+    "capital": "25000万元",
+    "link": "https://www.qcc.com/firm/c87a07b5bf31dc7ac807982e57b16299.html"
+  },
+  {
+    "name": "安徽医信数智科技有限公司",
+    "position": [
+      31.882027,
+      117.320373
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2016/9/23",
+    "legalPerson": "汪小东",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/5356d1f6eb33e2e242a616fe87c03fae.html"
+  },
+  {
+    "name": "新视角信息技术有限公司",
+    "position": [
+      31.84462,
+      117.20195
+    ],
+    "tags": [
+      "云计算",
+      "建筑"
+    ],
+    "date": "2004/4/19",
+    "legalPerson": "傅世定",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/c0a5cdd1d2cb19e84014226869d935a3.html"
+  },
+  {
+    "name": "合肥讯飞读写科技有限公司",
+    "position": [
+      31.785462,
+      117.250122
+    ],
+    "tags": [
+      "语音"
+    ],
+    "date": "2019/1/2",
+    "legalPerson": "胡国平",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/50c960d6253412f3fecc2b781e925093.html"
+  },
+  {
+    "name": "安徽淘云科技股份有限公司",
+    "position": [
+      31.835063,
+      117.091175
+    ],
+    "tags": [
+      "医疗",
+      "语音"
+    ],
+    "date": "2009/8/31",
+    "legalPerson": "刘庆升",
+    "capital": "8428万元",
+    "link": "https://www.qcc.com/firm/da53760bfa7bd16c6bdeedb013ed641d.html"
+  },
+  {
+    "name": "合肥湛达智能科技有限公司",
+    "position": [
+      31.828277,
+      117.125057
+    ],
+    "tags": [
+      "驾驶",
+      "物联网"
+    ],
+    "date": "2014/3/12",
+    "legalPerson": "张中",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/2cd51a1ab00e39fccb82b594591eb0cd.html"
+  },
+  {
+    "name": "安徽仓擎机器人有限公司",
+    "position": [
+      31.789568,
+      117.327259
+    ],
+    "tags": [
+      "机器人",
+      "驾驶"
+    ],
+    "date": "2018/12/5",
+    "legalPerson": "曹耀宗",
+    "capital": "531.914894万元",
+    "link": "https://www.qcc.com/firm/aa4a21717561f3bc14cdbcf2adfb83e2.html"
+  },
+  {
+    "name": "合肥前卫科技有限公司",
+    "position": [
+      31.794489,
+      117.288307
+    ],
+    "tags": [
+      "无人机",
+      "物联网"
+    ],
+    "date": "2019/4/29",
+    "legalPerson": "刘环",
+    "capital": "216万元",
+    "link": "https://www.qcc.com/firm/be26a146916656f1c2615851168cd9eb.html"
+  },
+  {
+    "name": "安徽合动智能科技有限公司",
+    "position": [
+      31.771904,
+      117.370209
+    ],
+    "tags": [
+      "机器人",
+      "芯片"
+    ],
+    "date": "2015/9/18",
+    "legalPerson": "陈现敏",
+    "capital": "575万元",
+    "link": "https://www.qcc.com/firm/21d8bc2d334caf4f2a344740a980530a.html"
+  },
+  {
+    "name": "安徽省量韵数据研究有限公司",
+    "position": [
+      31.807227,
+      117.229919
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2016/4/14",
+    "legalPerson": "王嶷",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/14daef91d9e5a4f30108bc2e35d139f4.html"
+  },
+  {
+    "name": "龙图腾网科技（合肥）股份有限公司",
+    "position": [
+      31.816748,
+      117.214684
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2011/6/1",
+    "legalPerson": "刘光",
+    "capital": "3554.67万元",
+    "link": "https://www.qcc.com/firm/776fac4ce46baaff5d3ee5d82fa9011b.html"
+  },
+  {
+    "name": "安徽吉尔信息科技有限公司",
+    "position": [
+      31.856691,
+      117.171354
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2011/4/25",
+    "legalPerson": "陆超",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/de36e97777747e6dc1c446ed50571eef.html"
+  },
+  {
+    "name": "安徽智灵动力科技有限公司",
+    "position": [
+      31.86054,
+      117.150578
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2020/5/26",
+    "legalPerson": "郝雅婕",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/214a0fca0f980b770206042ff7be3c2e.html"
+  },
+  {
+    "name": "安徽修武工业技术有限公司",
+    "position": [
+      31.861318,
+      117.150674
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2015/5/28",
+    "legalPerson": "余三九",
+    "capital": "3100万元",
+    "link": "https://www.qcc.com/firm/c506999471ee4ad982ce72f3e4ef3494.html"
+  },
+  {
+    "name": "安徽宇烁光电科技有限公司",
+    "position": [
+      31.854252,
+      117.185806
+    ],
+    "tags": [
+      "建筑",
+      "物联网"
+    ],
+    "date": "2007/5/18",
+    "legalPerson": "徐翠平",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/2696b1cee9dba98d9f3c2249a0542f8d.html"
+  },
+  {
+    "name": "中科超安科技有限公司",
+    "position": [
+      31.69176,
+      117.463992
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2015/10/23",
+    "legalPerson": "高芳",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/d39eb0a70cfa133d5e1b3d3141f8f319.html"
+  },
+  {
+    "name": "中水三立数据技术股份有限公司",
+    "position": [
+      31.85978,
+      117.180929
+    ],
+    "tags": [
+      "机器人",
+      "水电",
+      "通信"
+    ],
+    "date": "1999/7/8",
+    "legalPerson": "李静",
+    "capital": "5450万元",
+    "link": "https://www.qcc.com/firm/d570b97f41937ed72d1536e8db3b8d33.html"
+  },
+  {
+    "name": "合肥乐维信息技术有限公司",
+    "position": [
+      31.86054,
+      117.150578
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2008/7/28",
+    "legalPerson": "李进斌",
+    "capital": "10万元",
+    "link": "https://www.qcc.com/firm/15f1d83a5c28fe9f6d3112910e666668.html"
+  },
+  {
+    "name": "合肥市传秀科技有限公司",
+    "position": [
+      31.86054,
+      117.150578
+    ],
+    "tags": [
+      "水电",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2013/10/11",
+    "legalPerson": "戴鹏",
+    "capital": "1100万元",
+    "link": "https://www.qcc.com/firm/8ac5a1a412b9c785eac8f0b5a046c696.html"
+  },
+  {
+    "name": "安徽砺剑防务科技有限公司",
+    "position": [
+      31.861863,
+      117.172946
+    ],
+    "tags": [
+      "机器人",
+      "通信"
+    ],
+    "date": "2018/5/7",
+    "legalPerson": "王懋",
+    "capital": "2604.17万元",
+    "link": "https://www.qcc.com/firm/614887d0349596c39e468330475e2064.html"
+  },
+  {
+    "name": "合肥英特灵达信息技术有限公司",
+    "position": [
+      31.86054,
+      117.150578
+    ],
+    "tags": [
+      "芯片"
+    ],
+    "date": "2020/3/26",
+    "legalPerson": "朱才志",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/7d8addb5ba004e39c853c273f22c132a.html"
+  },
+  {
+    "name": "安徽柏杨信息科技有限公司",
+    "position": [
+      31.86054,
+      117.150578
+    ],
+    "tags": [
+      "水电",
+      "通信",
+      "物联网"
+    ],
+    "date": "2013/3/19",
+    "legalPerson": "卿臣",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/adc24f3a910debe0d2bb72ed153f5c17.html"
+  },
+  {
+    "name": "安徽超清科技股份有限公司",
+    "position": [
+      31.886167,
+      117.429683
+    ],
+    "tags": [
+      "云计算",
+      "通信",
+      "物联网"
+    ],
+    "date": "2011/1/26",
+    "legalPerson": "卢青松",
+    "capital": "6096万元",
+    "link": "https://www.qcc.com/firm/9b5e4b5f7b459d8d80a955729c36f390.html"
+  },
+  {
+    "name": "安徽中科维德数字科技有限公司",
+    "position": [
+      31.736957,
+      117.15183
+    ],
+    "tags": [
+      "通信",
+      "建筑"
+    ],
+    "date": "2014/8/13",
+    "legalPerson": "宋旭东",
+    "capital": "2811.54万元",
+    "link": "https://www.qcc.com/firm/9ee4ada604eec2789dc27e8298a32155.html"
+  },
+  {
+    "name": "合肥泰禾智能科技集团股份有限公司",
+    "position": [
+      31.791974,
+      117.158935
+    ],
+    "tags": [
+      "机器人",
+      "视觉"
+    ],
+    "date": "2004/12/10",
+    "legalPerson": "张许成",
+    "capital": "18337.5358万元",
+    "link": "https://www.qcc.com/firm/8bc910253b005d60b92a5c46a599932b.html"
+  },
+  {
+    "name": "易高家居有限公司",
+    "position": [
+      32.179382,
+      117.243421
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2017/4/6",
+    "legalPerson": "孔庆松",
+    "capital": "8000万元",
+    "link": "https://www.qcc.com/firm/6afb686686e00ec908d595b6fbc2252f.html"
+  },
+  {
+    "name": "安徽领云物联科技有限公司",
+    "position": [
+      31.776257,
+      117.276547
+    ],
+    "tags": [
+      "机器人",
+      "云计算",
+      "通信",
+      "物联网"
+    ],
+    "date": "2019/3/14",
+    "legalPerson": "徐国",
+    "capital": "1684.6065万元",
+    "link": "https://www.qcc.com/firm/e0ec6c0df8dac07f0bfb8a8da7baed95.html"
+  },
+  {
+    "name": "中科星图瑞云科技有限公司",
+    "position": [
+      32.173547,
+      118.418166
+    ],
+    "tags": [
+      "通信",
+      "建筑"
+    ],
+    "date": "2017/11/1",
+    "legalPerson": "刘庆华",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/72bf1dc5c1a7956d6bbad387faa0a4c5.html"
+  },
+  {
+    "name": "安徽三禾一信息科技有限公司",
+    "position": [
+      31.775467,
+      117.276473
+    ],
+    "tags": [
+      "机器人",
+      "云计算",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2014/12/18",
+    "legalPerson": "徐启胜",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/3326628907cb5866645ae33d718fad81.html"
+  },
+  {
+    "name": "安徽泽众安全科技有限公司",
+    "position": [
+      31.763098,
+      117.271414
+    ],
+    "tags": [
+      "通信",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2011/8/23",
+    "legalPerson": "沈迎春",
+    "capital": "3000万元",
+    "link": "https://www.qcc.com/firm/76d978be870153e93a09821bcb722fef.html"
+  },
+  {
+    "name": "东华软件合肥有限公司",
+    "position": [
+      31.762254,
+      117.27777
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2020/6/28",
+    "legalPerson": "柴敏",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/59a6397ce6033f8e17a1e4d770294d2b.html"
+  },
+  {
+    "name": "合肥哈工力训智能科技有限公司",
+    "position": [
+      31.775869,
+      117.276829
+    ],
+    "tags": [
+      "机器人",
+      "医疗"
+    ],
+    "date": "2019/1/4",
+    "legalPerson": "刘川",
+    "capital": "1230.8386万元",
+    "link": "https://www.qcc.com/firm/9f92f88324c38fc8886221d1b90ed72c.html"
+  },
+  {
+    "name": "合肥哈工邻泰自动化科技有限公司",
+    "position": [
+      31.77569,
+      117.276765
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2019/6/12",
+    "legalPerson": "张磊",
+    "capital": "344.3429万元",
+    "link": "https://www.qcc.com/firm/2ccfa2c7007d53ec7dd1cc49573da9d5.html"
+  },
+  {
+    "name": "合肥哈工仞极智能科技有限公司",
+    "position": [
+      31.775467,
+      117.276473
+    ],
+    "tags": [
+      "机器人",
+      "医疗",
+      "无人机",
+      "通信"
+    ],
+    "date": "2019/12/23",
+    "legalPerson": "孙安康",
+    "capital": "867.6428万元",
+    "link": "https://www.qcc.com/firm/915ecf852931484b4e4cd3f4f587bc9f.html"
+  },
+  {
+    "name": "合肥昊邦信息科技有限公司",
+    "position": [
+      31.776569,
+      117.278478
+    ],
+    "tags": [
+      "机器人",
+      "云计算",
+      "物联网"
+    ],
+    "date": "2005/7/22",
+    "legalPerson": "陈向前",
+    "capital": "1060万元",
+    "link": "https://www.qcc.com/firm/f849a70cd6c867f1630ce04819443c6a.html"
+  },
+  {
+    "name": "合肥联宝信息技术有限公司",
+    "position": [
+      31.767613,
+      117.267304
+    ],
+    "tags": [
+      "通信",
+      "物联网"
+    ],
+    "date": "2012/12/13",
+    "legalPerson": "丁晓辉",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/ed38dffcf38134ab68b2b417a331eeb2.html"
+  },
+  {
+    "name": "合肥市汉石通科技有限公司",
+    "position": [
+      31.776913,
+      117.185507
+    ],
+    "tags": [
+      "云计算",
+      "物联网"
+    ],
+    "date": "2018/6/4",
+    "legalPerson": "王凤侠",
+    "capital": "200万元",
+    "link": "https://www.qcc.com/firm/14835a4eadc1e7c3ad892c8ab7b00e49.html"
+  },
+  {
+    "name": "合肥泽众城市智能科技有限公司",
+    "position": [
+      31.763098,
+      117.271414
+    ],
+    "tags": [
+      "通信",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2015/8/6",
+    "legalPerson": "李陇清",
+    "capital": "3000万元",
+    "link": "https://www.qcc.com/firm/832b771a642d3c935caf5c0e82425f34.html"
+  },
+  {
+    "name": "联宝（合肥）电子科技有限公司",
+    "position": [
+      31.963849,
+      117.344488
+    ],
+    "tags": [
+      "通信",
+      "物联网"
+    ],
+    "date": "2011/12/14",
+    "legalPerson": "丁晓辉",
+    "capital": "26500万美元",
+    "link": "https://www.qcc.com/firm/2d145335ede4730a2bb67eef46351680.html"
+  },
+  {
+    "name": "中用科技有限公司",
+    "position": [
+      31.776569,
+      117.278478
+    ],
+    "tags": [
+      "建筑",
+      "物联网"
+    ],
+    "date": "2014/5/23",
+    "legalPerson": "JIANG DABAI",
+    "capital": "5550万元",
+    "link": "https://www.qcc.com/firm/32bd636471e10391a385281942547da4.html"
+  },
+  {
+    "name": "科大国创软件股份有限公司",
+    "position": [
+      31.827984,
+      117.138911
+    ],
+    "tags": [
+      "云计算",
+      "通信",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2000/11/6",
+    "legalPerson": "董永东",
+    "capital": "29116.7418万元",
+    "link": "https://www.qcc.com/firm/f207ec7729e804dfc292d757d56b135d.html"
+  },
+  {
+    "name": "安徽银通物联有限公司",
+    "position": [
+      31.839344,
+      117.346443
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2011/8/9",
+    "legalPerson": "陈世久",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/c0bf821e2adcf8311927158be69a5977.html"
+  },
+  {
+    "name": "合肥九天卫星科技有限公司",
+    "position": [
+      31.840748,
+      117.21128
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/3/4",
+    "legalPerson": "刘涛",
+    "capital": "550万元",
+    "link": "https://www.qcc.com/firm/8d77541879117a77294ef70acf2d3ba8.html"
+  },
+  {
+    "name": "安徽迪万科技有限公司",
+    "position": [
+      31.83552,
+      117.208563
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2016/8/23",
+    "legalPerson": "乔亚",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/e8d2a7f1074688fb296019547248dec1.html"
+  },
+  {
+    "name": "安徽美心信息科技有限公司",
+    "position": [
+      31.819414,
+      117.162226
+    ],
+    "tags": [
+      "医疗",
+      "建筑"
+    ],
+    "date": "2015/1/5",
+    "legalPerson": "朱灿",
+    "capital": "501万元",
+    "link": "https://www.qcc.com/firm/beaec0be61ea865ab9277070e40f3a2f.html"
+  },
+  {
+    "name": "合肥派拓智能科技有限公司",
+    "position": [
+      31.8547,
+      117.205331
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2020/5/28",
+    "legalPerson": "金勇剑",
+    "capital": "170万元",
+    "link": "https://www.qcc.com/firm/e012b5d76ad5de58666852975c91de58.html"
+  },
+  {
+    "name": "安徽启新明智科技有限公司",
+    "position": [
+      31.835391,
+      117.137821
+    ],
+    "tags": [
+      "医疗",
+      "物联网"
+    ],
+    "date": "2018/12/26",
+    "legalPerson": "李钢",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/a5591721d03fb0bf22e961ab36e47011.html"
+  },
+  {
+    "name": "安徽庆宇光电科技有限公司",
+    "position": [
+      31.83688,
+      117.138698
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2014/8/21",
+    "legalPerson": "陈庆华",
+    "capital": "1216.2148万元",
+    "link": "https://www.qcc.com/firm/1d63d9e7454ae4937c22f839f2888804.html"
+  },
+  {
+    "name": "安徽省水恒科技有限公司",
+    "position": [
+      31.811651,
+      117.335584
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2016/9/29",
+    "legalPerson": "黄健",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/58724ba1f93732de599691cb5a4ae0a2.html"
+  },
+  {
+    "name": "安徽学云教育科技有限公司",
+    "position": [
+      31.835768,
+      117.208108
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2018/7/13",
+    "legalPerson": "张元平",
+    "capital": "1011.77万元",
+    "link": "https://www.qcc.com/firm/36cf591cfc2ebd6e0ef92fb441dfb286.html"
+  },
+  {
+    "name": "安徽鱼人智能科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2016/6/29",
+    "legalPerson": "何孝珍",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/1f02060175bce1dda189e9f0ddab2b09.html"
+  },
+  {
+    "name": "安徽云耕信息科技有限公司",
+    "position": [
+      31.833537,
+      117.100707
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2017/4/27",
+    "legalPerson": "唐洋",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/c927f8f9fa1b48d616e95f6e7bc31712.html"
+  },
+  {
+    "name": "安徽中科大国祯信息科技有限责任公司",
+    "position": [
+      31.8453,
+      117.204129
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2000/6/16",
+    "legalPerson": "谢贻富",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/9a00af08800306bbcbf74f95863b0bbe.html"
+  },
+  {
+    "name": "中科海奥智慧能源集团股份有限公司",
+    "position": [
+      31.842089,
+      117.111884
+    ],
+    "tags": [
+      "建筑",
+      "物联网"
+    ],
+    "date": "2009/5/5",
+    "legalPerson": "陈滋健",
+    "capital": "7800万元",
+    "link": "https://www.qcc.com/firm/d7b1039267b10a045855f731c1efbf86.html"
+  },
+  {
+    "name": "合肥斌能信息科技有限公司",
+    "position": [
+      31.84907,
+      117.204115
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2016/9/28",
+    "legalPerson": "李阳",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/556c3acbf9aa02ce50e38b4c6500a3df.html"
+  },
+  {
+    "name": "合肥国为电子有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2009/11/2",
+    "legalPerson": "陈静",
+    "capital": "1455.56万元",
+    "link": "https://www.qcc.com/firm/611dfaca3338e548fbf87f7110181f43.html"
+  },
+  {
+    "name": "合肥恒宝天择智能科技有限公司",
+    "position": [
+      31.850594,
+      117.202565
+    ],
+    "tags": [
+      "生物",
+      "云计算",
+      "机器人",
+      "物联网"
+    ],
+    "date": "2019/5/17",
+    "legalPerson": "王永",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/7e82182ce9810810940d2f07aff49fd8.html"
+  },
+  {
+    "name": "合肥龙图腾信息技术有限公司",
+    "position": [
+      31.835391,
+      117.137821
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2016/4/20",
+    "legalPerson": "刘光",
+    "capital": "1200万元",
+    "link": "https://www.qcc.com/firm/cfa2d74e67bf98071328a891c7a8e196.html"
+  },
+  {
+    "name": "合肥四维图新科技有限公司",
+    "position": [
+      31.842089,
+      117.111884
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/5/30",
+    "legalPerson": "孟庆昕",
+    "capital": "10000万元",
+    "link": "https://www.qcc.com/firm/63a52900973c102e56f0728b7eb62096.html"
+  },
+  {
+    "name": "合肥中科九衡科技有限公司",
+    "position": [
+      31.785711,
+      117.250011
+    ],
+    "tags": [
+      "通信",
+      "检测",
+      "建筑"
+    ],
+    "date": "2016/10/19",
+    "legalPerson": "庞伟伟",
+    "capital": "3629.79万元",
+    "link": "https://www.qcc.com/firm/419e8d003476a2a7b3a340b338ae6a28.html"
+  },
+  {
+    "name": "合肥中科深谷科技发展有限公司",
+    "position": [
+      31.858707,
+      117.110482
+    ],
+    "tags": [
+      "无人机",
+      "物联网",
+      "机器人",
+      "云计算",
+      "芯片",
+      "量子"
+    ],
+    "date": "2017/3/14",
+    "legalPerson": "陈锋",
+    "capital": "2090.913万元",
+    "link": "https://www.qcc.com/firm/9cdfc43aae21dce8bcfe801407cd0171.html"
+  },
+  {
+    "name": "科大乾延科技有限公司",
+    "position": [
+      31.785462,
+      117.250123
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2018/3/6",
+    "legalPerson": "钱静",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/1aaa3a031f7cd4c00a5f186afab350ec.html"
+  },
+  {
+    "name": "合肥望闻健康科技有限公司",
+    "position": [
+      31.827446,
+      117.139456
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2019/8/7",
+    "legalPerson": "朱国冉",
+    "capital": "200万元",
+    "link": "https://www.qcc.com/firm/d93d26d66b526a6bb3eb1a53a6b31670.html"
+  },
+  {
+    "name": "讯飞智元信息科技有限公司",
+    "position": [
+      31.836396,
+      117.143325
+    ],
+    "tags": [
+      "通信",
+      "建筑"
+    ],
+    "date": "2002/10/25",
+    "legalPerson": "张友国",
+    "capital": "40600万元",
+    "link": "https://www.qcc.com/firm/4906f7bb8d962f46a19d11c5bae8c398.html"
+  },
+  {
+    "name": "安徽华泓信息技术有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "机器人",
+      "云计算",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2013/3/20",
+    "legalPerson": "邱大礼",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/11421e0a0da53cbcf520b298fb4e9b7a.html"
+  },
+  {
+    "name": "安徽省星灵信息科技有限公司",
+    "position": [
+      31.799839,
+      117.133109
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2011/5/26",
+    "legalPerson": "王振华",
+    "capital": "428.52万元",
+    "link": "https://www.qcc.com/firm/d1dcbdb5f2b95447657f448427a4c9a5.html"
+  },
+  {
+    "name": "合肥含铭电子技术有限公司",
+    "position": [
+      31.799839,
+      117.133109
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2015/8/31",
+    "legalPerson": "王振华",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/24e26c56388945767fc6f242b0c1f8cb.html"
+  },
+  {
+    "name": "合肥泓泉档案信息科技有限公司",
+    "position": [
+      31.839669,
+      117.211828
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2015/3/27",
+    "legalPerson": "姜志",
+    "capital": "1592万元",
+    "link": "https://www.qcc.com/firm/8f1fc5b1cf1a2a9c782b47be35e5552e.html"
+  },
+  {
+    "name": "合肥中科迪宏自动化有限公司",
+    "position": [
+      31.8547,
+      117.205331
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/7/20",
+    "legalPerson": "令狐彬",
+    "capital": "1277.3239万元",
+    "link": "https://www.qcc.com/firm/11b495d43cde94a723f3b6c53f5565c4.html"
+  },
+  {
+    "name": "合肥晶浦传感科技有限公司",
+    "position": [
+      31.736957,
+      117.15183
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2014/4/4",
+    "legalPerson": "孙多利",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/891078eedfc649182f20da799b44cb6c.html"
+  },
+  {
+    "name": "合肥森亿智能科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2020/4/3",
+    "legalPerson": "张少典",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/41aff41d1953e07284b64e235a43c0f2.html"
+  },
+  {
+    "name": "通控研究院（安徽）有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "检测"
+    ],
+    "date": "2018/1/10",
+    "legalPerson": "严从梅",
+    "capital": "1025.6411万元",
+    "link": "https://www.qcc.com/firm/49806cc5827e9ae454e4290b50e48b8b.html"
+  },
+  {
+    "name": "合肥索斯智能科技有限公司",
+    "position": [
+      31.830662,
+      117.137967
+    ],
+    "tags": [
+      "机器人",
+      "通信",
+      "芯片",
+      "物联网"
+    ],
+    "date": "2020/5/14",
+    "legalPerson": "袁福星",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/9282fee35646e168831b1f2cddc64376.html"
+  },
+  {
+    "name": "合肥康聆医疗科技有限公司",
+    "position": [
+      31.827468,
+      117.14795
+    ],
+    "tags": [
+      "医疗",
+      "云计算"
+    ],
+    "date": "2017/6/5",
+    "legalPerson": "蔡盛盛",
+    "capital": "150万元",
+    "link": "https://www.qcc.com/firm/ed9cf5b8d04a6400b2d1bea1378f6982.html"
+  },
+  {
+    "name": "合肥美智智能科技有限公司",
+    "position": [
+      31.80321,
+      117.193391
+    ],
+    "tags": [
+      "医疗",
+      "检测"
+    ],
+    "date": "2017/2/8",
+    "legalPerson": "戴江",
+    "capital": "9658万元",
+    "link": "https://www.qcc.com/firm/8c8d04aceab405a4c84c4e58f9fcfc60.html"
+  },
+  {
+    "name": "安徽核芯电子科技有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "检测"
+    ],
+    "date": "2015/7/7",
+    "legalPerson": "叶波",
+    "capital": "600万元",
+    "link": "https://www.qcc.com/firm/7464a21f8721c991f88609b399c1cf0c.html"
+  },
+  {
+    "name": "安徽五域安全技术有限公司",
+    "position": [
+      31.840745,
+      117.211135
+    ],
+    "tags": [
+      "生物",
+      "医疗",
+      "检测",
+      "物联网"
+    ],
+    "date": "2020/7/8",
+    "legalPerson": "翁文娟",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/9160f6ec328c77878539260527a07956.html"
+  },
+  {
+    "name": "安徽智咏物联科技有限公司",
+    "position": [
+      31.840745,
+      117.211135
+    ],
+    "tags": [
+      "云计算",
+      "物联网"
+    ],
+    "date": "2017/10/19",
+    "legalPerson": "陈翠兰",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/aca13ec421b44d483a5cce057c312a02.html"
+  },
+  {
+    "name": "安徽一视科技有限公司",
+    "position": [
+      31.8547,
+      117.205331
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2019/9/25",
+    "legalPerson": "唐义平",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/23c5c8cc784e6483e2318a228bad406d.html"
+  },
+  {
+    "name": "鼎富智能科技有限公司",
+    "position": [
+      31.785462,
+      117.250122
+    ],
+    "tags": [
+      "机器人",
+      "建筑"
+    ],
+    "date": "2011/11/18",
+    "legalPerson": "程永全",
+    "capital": "23529.4118万元",
+    "link": "https://www.qcc.com/firm/4cbae8e17bbaeaa584a577e2b9dacf6f.html"
+  },
+  {
+    "name": "安徽恒为信息科技有限公司",
+    "position": [
+      31.849988,
+      117.202778
+    ],
+    "tags": [
+      "芯片",
+      "物联网"
+    ],
+    "date": "2018/7/16",
+    "legalPerson": "熊艳根",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/f24683ce23d47df3897da3bcf0962772.html"
+  },
+  {
+    "name": "合肥艾瑞德电气有限公司",
+    "position": [
+      31.841834,
+      117.135107
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2014/5/20",
+    "legalPerson": "张祥宇",
+    "capital": "1200万元",
+    "link": "https://www.qcc.com/firm/31b942d08450d5f7df4f5393946d622a.html"
+  },
+  {
+    "name": "合肥科迈捷智能传感技术股份有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "检测"
+    ],
+    "date": "2008/7/11",
+    "legalPerson": "顾宇",
+    "capital": "800万元",
+    "link": "https://www.qcc.com/firm/785292ae034e8e7bdc818790bc5fb145.html"
+  },
+  {
+    "name": "合肥图溯信息技术有限公司",
+    "position": [
+      31.711468,
+      117.333028
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2020/7/22",
+    "legalPerson": "蒋克柱",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/fa0b9f3cd2b3279137a2e693aabd53d6.html"
+  },
+  {
+    "name": "苏州美石生物科技有限公司",
+    "position": [
+      31.378197,
+      120.534179
+    ],
+    "tags": [
+      "机器人",
+      "医疗"
+    ],
+    "date": "2019/4/19",
+    "legalPerson": "张学梦",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/9f20a426dc79dac8c0e1c8e7ace18824.html"
+  },
+  {
+    "name": "安徽奥视智能装备有限公司",
+    "position": [
+      31.840745,
+      117.211135
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2020/8/3",
+    "legalPerson": "汪金霞",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/a5d2fb224fe6489cb417dea71fde7727.html"
+  },
+  {
+    "name": "安徽芯智科技有限公司",
+    "position": [
+      31.785462,
+      117.250122
+    ],
+    "tags": [
+      "通信",
+      "芯片"
+    ],
+    "date": "2018/10/17",
+    "legalPerson": "陶承",
+    "capital": "4850万元",
+    "link": "https://www.qcc.com/firm/b24029ec342e59987b8a374c9b025965.html"
+  },
+  {
+    "name": "安徽巨一科技股份有限公司",
+    "position": [
+      31.793388,
+      117.340027
+    ],
+    "tags": [
+      "检测"
+    ],
+    "date": "2005/1/18",
+    "legalPerson": "林巨广",
+    "capital": "13719.8775万元",
+    "link": "https://www.qcc.com/firm/05f08b6c63715b548d5c15ae7796aea8.html"
+  },
+  {
+    "name": "安徽凯斯特电力科技有限公司",
+    "position": [
+      31.73006,
+      117.2467
+    ],
+    "tags": [
+      "通信",
+      "芯片",
+      "建筑"
+    ],
+    "date": "2017/10/16",
+    "legalPerson": "陈思渊",
+    "capital": "3000万元",
+    "link": "https://www.qcc.com/firm/fd081c0db8baa44c4dc0fbf7d6e354ef.html"
+  },
+  {
+    "name": "安徽吉优和科技发展有限公司",
+    "position": [
+      31.848829,
+      117.088903
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/1/8",
+    "legalPerson": "陈卓",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/3eb588200328315fcc1f90a49b0c9c47.html"
+  },
+  {
+    "name": "合肥松数科技有限公司",
+    "position": [
+      31.832849,
+      117.094797
+    ],
+    "tags": [
+      "云计算"
+    ],
+    "date": "2019/2/27",
+    "legalPerson": "汪文义",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/0a979f7ff17c683ca83e0a045b15499b.html"
+  },
+  {
+    "name": "合肥网达软件有限公司",
+    "position": [
+      31.784959,
+      117.247184
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2012/11/12",
+    "legalPerson": "邵南",
+    "capital": "15000万元",
+    "link": "https://www.qcc.com/firm/30bba2fe17c59a7654664476a40ef9ae.html"
+  },
+  {
+    "name": "合肥玉卓光电科技有限公司",
+    "position": [
+      31.859062,
+      117.176986
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/11/16",
+    "legalPerson": "贾先德",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/c669466dc42cc68248a423653451fe59.html"
+  },
+  {
+    "name": "安徽迈立信息科技有限公司",
+    "position": [
+      31.872791,
+      117.144277
+    ],
+    "tags": [
+      "通信",
+      "物联网",
+      "机器人",
+      "云计算",
+      "芯片"
+    ],
+    "date": "2010/12/16",
+    "legalPerson": "孙浩伟",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/dd7a6a7839e29f53c2b45806a7aaca80.html"
+  },
+  {
+    "name": "安徽新境界自动化技术有限公司",
+    "position": [
+      31.861863,
+      117.172946
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2014/5/19",
+    "legalPerson": "殷杰",
+    "capital": "2336.59万元",
+    "link": "https://www.qcc.com/firm/6ee2846486bf1452b1c384d2e5d8ff02.html"
+  },
+  {
+    "name": "中电博微（安徽）物联科技有限公司",
+    "position": [
+      31.859284,
+      117.247375
+    ],
+    "tags": [
+      "检测",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2019/5/21",
+    "legalPerson": "万静龙",
+    "capital": "3073.17万元",
+    "link": "https://www.qcc.com/firm/4915a9d0d6286232ac44d6387cbe8302.html"
+  },
+  {
+    "name": "合肥量芯科技有限公司",
+    "position": [
+      31.837669,
+      117.13503
+    ],
+    "tags": [
+      "通信",
+      "芯片",
+      "量子"
+    ],
+    "date": "2018/6/15",
+    "legalPerson": "郝礼祥",
+    "capital": "3000万元",
+    "link": "https://www.qcc.com/firm/88dea07eb9c09d821217d65ef7327c2d.html"
+  },
+  {
+    "name": "网新科技集团有限公司",
+    "position": [
+      31.864275,
+      117.152176
+    ],
+    "tags": [
+      "医疗",
+      "通信"
+    ],
+    "date": "2013/10/30",
+    "legalPerson": "许方庆",
+    "capital": "8000万元",
+    "link": "https://www.qcc.com/firm/9723c8a4282d25d4143804763d97e545.html"
+  },
+  {
+    "name": "安徽德恩普智能科技有限责任公司",
+    "position": [
+      31.831769,
+      117.21825
+    ],
+    "tags": [
+      "通信",
+      "物联网",
+      "机器人",
+      "云计算",
+      "建筑"
+    ],
+    "date": "2012/5/31",
+    "legalPerson": "陈勇军",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/1b4f91b85a1f7e4c04dc06b876a237df.html"
+  },
+  {
+    "name": "安徽衣贝洁实业有限公司",
+    "position": [
+      31.785601,
+      117.4946
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2014/6/9",
+    "legalPerson": "吴云红",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/b242922adb0780ef1e25e0d041c4feb5.html"
+  },
+  {
+    "name": "合肥科鼎智能科技有限公司",
+    "position": [
+      31.861163,
+      117.175444
+    ],
+    "tags": [
+      "检测"
+    ],
+    "date": "2003/4/2",
+    "legalPerson": "刘清",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/876e6ebd457c4f8c3f15778a38dea9bd.html"
+  },
+  {
+    "name": "安徽数据堂科技有限公司",
+    "position": [
+      31.857522,
+      117.255258
+    ],
+    "tags": [
+      "云计算"
+    ],
+    "date": "2017/7/17",
+    "legalPerson": "吴鑫坤",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/0f9b09b4c3b41c286bb5f9f82a21e971.html"
+  },
+  {
+    "name": "中邮（安徽）网络技术有限公司",
+    "position": [
+      31.867799,
+      117.152179
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2014/5/23",
+    "legalPerson": "李唐",
+    "capital": "1500万元",
+    "link": "https://www.qcc.com/firm/483b8a70bae3ee6fc6196cf242b45eb9.html"
+  },
+  {
+    "name": "合肥磐石智能科技股份有限公司",
+    "position": [
+      31.767184,
+      117.220453
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2012/2/13",
+    "legalPerson": "舒玉恒",
+    "capital": "3000万元",
+    "link": "https://www.qcc.com/firm/8562fd43201e07d0b05b79b577f21c68.html"
+  },
+  {
+    "name": "合肥赛摩雄鹰自动化工程科技有限公司",
+    "position": [
+      31.790843,
+      117.158616
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2011/10/27",
+    "legalPerson": "厉冉",
+    "capital": "3200万元",
+    "link": "https://www.qcc.com/firm/748a078f77ce85b1633a1cc9201aa949.html"
+  },
+  {
+    "name": "合肥市云联鸿达信息技术有限公司",
+    "position": [
+      31.783085,
+      117.161612
+    ],
+    "tags": [
+      "医疗",
+      "云计算"
+    ],
+    "date": "2013/4/9",
+    "legalPerson": "蒋智谋",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/43b9e59cc0556c7e74c5257ff8bfcb21.html"
+  },
+  {
+    "name": "安徽宇锋智能科技有限公司",
+    "position": [
+      31.661867,
+      117.097163
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2018/1/23",
+    "legalPerson": "李道亮",
+    "capital": "9164.644万元",
+    "link": "https://www.qcc.com/firm/148274ad1934ea49bb2fb3a8b74b6213.html"
+  },
+  {
+    "name": "安徽邦图信息技术股份有限公司",
+    "position": [
+      31.783085,
+      117.161612
+    ],
+    "tags": [
+      "建筑",
+      "物联网"
+    ],
+    "date": "2018/5/2",
+    "legalPerson": "赵刚",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/04ad80ad267d80f5a2be779ffbc070be.html"
+  },
+  {
+    "name": "安徽惠洲地质安全研究院股份有限公司",
+    "position": [
+      31.773588,
+      117.133835
+    ],
+    "tags": [
+      "检测",
+      "建筑"
+    ],
+    "date": "2006/9/7",
+    "legalPerson": "刘惠洲",
+    "capital": "4130万元",
+    "link": "https://www.qcc.com/firm/e2b651f56c14af2b5b9086a3c3a708a9.html"
+  },
+  {
+    "name": "人民华智通讯技术有限公司",
+    "position": [
+      31.765088,
+      117.20718
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2018/4/10",
+    "legalPerson": "曾维松",
+    "capital": "20000万元",
+    "link": "https://www.qcc.com/firm/b88c59a59e11144b67bd7455d862db49.html"
+  },
+  {
+    "name": "合肥瀚翔智能科技有限公司",
+    "position": [
+      31.77869,
+      117.122748
+    ],
+    "tags": [
+      "机器人",
+      "无人机"
+    ],
+    "date": "2016/7/26",
+    "legalPerson": "黄继东",
+    "capital": "3200万元",
+    "link": "https://www.qcc.com/firm/6c52d1930a2f793160a9944814c5a4c8.html"
+  },
+  {
+    "name": "安徽舜禹水务股份有限公司",
+    "position": [
+      31.967153,
+      117.267883
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2011/9/8",
+    "legalPerson": "李广宏",
+    "capital": "16416万元",
+    "link": "https://www.qcc.com/firm/5b1bea30a610bbe12dd5165cc7f868b7.html"
+  },
+  {
+    "name": "合肥哈工库讯智能科技有限公司",
+    "position": [
+      31.775799,
+      117.276747
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2014/4/1",
+    "legalPerson": "张魏魏",
+    "capital": "2697.8418万元",
+    "link": "https://www.qcc.com/firm/be2aafed6587e053bf6937be2526ac21.html"
+  },
+  {
+    "name": "客乐宝智能科技有限公司",
+    "position": [
+      31.776387,
+      117.275739
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2013/6/6",
+    "legalPerson": "王虎飞",
+    "capital": "7103万元",
+    "link": "https://www.qcc.com/firm/e198673efe6ac24fbcce1442ffb259a1.html"
+  },
+  {
+    "name": "安徽木星科技有限公司",
+    "position": [
+      31.750371,
+      117.262918
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/4/9",
+    "legalPerson": "郭栋梁",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/f2f5606c02fbe51a261c8f32a111a8a1.html"
+  },
+  {
+    "name": "天泽智联科技股份公司",
+    "position": [
+      31.751505,
+      117.262263
+    ],
+    "tags": [
+      "通信",
+      "检测",
+      "物联网",
+      "云计算",
+      "建筑"
+    ],
+    "date": "2018/8/20",
+    "legalPerson": "王宇",
+    "capital": "8160.75万元",
+    "link": "https://www.qcc.com/firm/95546c107542f31a95b820784354797b.html"
+  },
+  {
+    "name": "安徽智寰科技有限公司",
+    "position": [
+      31.776428,
+      117.278487
+    ],
+    "tags": [
+      "机器人",
+      "云计算",
+      "通信",
+      "物联网"
+    ],
+    "date": "2019/3/25",
+    "legalPerson": "翟中平",
+    "capital": "1243.7745万元",
+    "link": "https://www.qcc.com/firm/3abe2f76cde60eea144830cfcf2b2781.html"
+  },
+  {
+    "name": "合肥美菱物联科技有限公司",
+    "position": [
+      31.744978,
+      117.233028
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2019/1/21",
+    "legalPerson": "钟明",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/3e275619bc4a0d9e0a78e1b5ffee54e1.html"
+  },
+  {
+    "name": "合肥路波机器人科技有限公司",
+    "position": [
+      31.77569,
+      117.276765
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2018/9/29",
+    "legalPerson": "孙逊",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/61ae9174f2430f273d473d5dab9c977a.html"
+  },
+  {
+    "name": "合肥焕智科技有限公司",
+    "position": [
+      31.837669,
+      117.13503
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2019/5/15",
+    "legalPerson": "陶慧",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/5c5ca5cfe3f044b4d31fd9ef1d2461d2.html"
+  },
+  {
+    "name": "安徽耀峰雷达科技有限公司",
+    "position": [
+      31.737827,
+      117.218383
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2016/3/7",
+    "legalPerson": "江洪",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/1f2ce066d9c1c5d5d26937276cd66f8f.html"
+  },
+  {
+    "name": "合肥格泉智能科技有限公司",
+    "position": [
+      31.769378,
+      117.232762
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2015/9/18",
+    "legalPerson": "孟杰",
+    "capital": "1380万元",
+    "link": "https://www.qcc.com/firm/dc440380582c23c1443057041ec9d270.html"
+  },
+  {
+    "name": "合肥皖一焊接器材有限公司",
+    "position": [
+      31.757858,
+      117.276288
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2013/4/9",
+    "legalPerson": "杨军",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/69f712707e4a042df755bae4091fc3ad.html"
+  },
+  {
+    "name": "合肥哈工澳汀智能科技有限公司",
+    "position": [
+      31.726245,
+      117.262119
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2019/9/26",
+    "legalPerson": "段泽坤",
+    "capital": "1155.2446万元",
+    "link": "https://www.qcc.com/firm/53e285e4815fc0f4ce6d2a10e6528220.html"
+  },
+  {
+    "name": "合肥合豚网络科技有限公司",
+    "position": [
+      31.757858,
+      117.276288
+    ],
+    "tags": [
+      "机器人",
+      "医疗",
+      "物联网"
+    ],
+    "date": "2018/7/20",
+    "legalPerson": "贾仁军",
+    "capital": "600万元",
+    "link": "https://www.qcc.com/firm/37002359d21b7c75c26eb2200fe421b7.html"
+  },
+  {
+    "name": "合肥鼎方信息科技有限公司",
+    "position": [
+      31.791463,
+      117.219931
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2018/8/7",
+    "legalPerson": "刘强",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/6c78841275e2ebe47a43030a2d017d85.html"
+  },
+  {
+    "name": "安徽亚欣智能科技有限公司",
+    "position": [
+      31.771288,
+      117.370161
+    ],
+    "tags": [
+      "驾驶",
+      "检测",
+      "物联网",
+      "机器人",
+      "通信",
+      "建筑"
+    ],
+    "date": "2017/3/3",
+    "legalPerson": "万林",
+    "capital": "1500万元",
+    "link": "https://www.qcc.com/firm/a0019334b2289882dbcb4a0f1c227b33.html"
+  },
+  {
+    "name": "合肥翰林数码科技有限公司",
+    "position": [
+      31.882027,
+      117.320373
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2006/5/17",
+    "legalPerson": "倪修好",
+    "capital": "101万元",
+    "link": "https://www.qcc.com/firm/0c43017761c3973252cb175a5842bf38.html"
+  },
+  {
+    "name": "安徽比达光电科技有限公司",
+    "position": [
+      31.886537,
+      117.404805
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2012/10/18",
+    "legalPerson": "王凤平",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/b0289be4c2ec11935150b0125fc4ecd7.html"
+  },
+  {
+    "name": "中安金路环境工程有限公司",
+    "position": [
+      31.886081,
+      117.300554
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2003/9/11",
+    "legalPerson": "刘咸宝",
+    "capital": "10000万元",
+    "link": "https://www.qcc.com/firm/17edcd8e7f09d450ec32cc8b0572ea60.html"
+  },
+  {
+    "name": "安徽源端网络科技有限公司",
+    "position": [
+      31.867766,
+      117.373629
+    ],
+    "tags": [
+      "通信",
+      "建筑"
+    ],
+    "date": "2019/12/27",
+    "legalPerson": "聂磊",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/edaf0eb7240b6037d00060dbb727b0a4.html"
+  },
+  {
+    "name": "合肥萌猫科技有限公司",
+    "position": [
+      31.83467,
+      117.345573
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2018/3/30",
+    "legalPerson": "朱贞媛",
+    "capital": "50万元",
+    "link": "https://www.qcc.com/firm/49a2c80330b0c9f30ef7e3e54158f4a4.html"
+  },
+  {
+    "name": "安徽米尔科技有限公司",
+    "position": [
+      31.826508,
+      117.136746
+    ],
+    "tags": [
+      "医疗",
+      "建筑",
+      "云计算",
+      "物联网"
+    ],
+    "date": "2018/8/13",
+    "legalPerson": "黄磊",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/c8fe35bc672aeb743b67da9494b85868.html"
+  },
+  {
+    "name": "安徽紫薇帝星数字科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "机器人",
+      "医疗"
+    ],
+    "date": "2017/2/28",
+    "legalPerson": "王宜主",
+    "capital": "740.66万元",
+    "link": "https://www.qcc.com/firm/b60d8b94d00cbe85ce32e0c89e502931.html"
+  },
+  {
+    "name": "合肥中科蓝睿科技有限公司",
+    "position": [
+      31.821714,
+      117.121976
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2016/5/31",
+    "legalPerson": "孙丙宇",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/e1ab6ffab25cd997af4515688c544188.html"
+  },
+  {
+    "name": "合肥视展光电科技有限公司",
+    "position": [
+      31.826123,
+      117.137124
+    ],
+    "tags": [
+      "视觉"
+    ],
+    "date": "2018/8/17",
+    "legalPerson": "徐少罕",
+    "capital": "658.6997万元",
+    "link": "https://www.qcc.com/firm/6d5f864bf4ba4b428f79d3131ee1d400.html"
+  },
+  {
+    "name": "安徽智融景和科技有限公司",
+    "position": [
+      31.836457,
+      117.139062
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2018/12/25",
+    "legalPerson": "赵井萍",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/9a9f5e413e0e8f79e361594f71dadfa8.html"
+  },
+  {
+    "name": "安徽省科普产品工程研究中心有限责任公司",
+    "position": [
+      31.842226,
+      117.197956
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2010/1/6",
+    "legalPerson": "王政",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/bdd3a702aa93b72004b344ffe2ef7054.html"
+  },
+  {
+    "name": "合肥永信科翔智能技术有限公司",
+    "position": [
+      31.840629,
+      117.199438
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2002/6/25",
+    "legalPerson": "刘启源",
+    "capital": "3018万元",
+    "link": "https://www.qcc.com/firm/8ef84d0a52cf238223d25ef6c5abaee2.html"
+  },
+  {
+    "name": "安徽推想智能科技有限公司",
+    "position": [
+      31.842089,
+      117.111884
+    ],
+    "tags": [
+      "机器人",
+      "医疗"
+    ],
+    "date": "2020/2/24",
+    "legalPerson": "陈宽",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/47b0b668d7610c8ef5e99432f60a480b.html"
+  },
+  {
+    "name": "安徽炬视科技有限公司",
+    "position": [
+      31.820253,
+      117.121539
+    ],
+    "tags": [
+      "通信",
+      "视觉"
+    ],
+    "date": "2017/7/13",
+    "legalPerson": "朱兆亚",
+    "capital": "1340.2062万元",
+    "link": "https://www.qcc.com/firm/78a42870b60db69f982495d2c321bd97.html"
+  },
+  {
+    "name": "安徽志维信息科技有限公司",
+    "position": [
+      31.845527,
+      117.213052
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2015/10/26",
+    "legalPerson": "罗雪松",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/b5311a779385ddcad70ebb6de691ee27.html"
+  },
+  {
+    "name": "安徽云智动科技有限公司",
+    "position": [
+      31.796672,
+      117.222942
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2019/1/18",
+    "legalPerson": "陈付军",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/9b89761dcf80e43ba625edf543825705.html"
+  },
+  {
+    "name": "安徽互联智库数据技术有限公司",
+    "position": [
+      31.854784,
+      117.205418
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/3/9",
+    "legalPerson": "潘甜甜",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/31a6dbab04a96c5deffa9efea49699ba.html"
+  },
+  {
+    "name": "安徽硕威智能科技股份有限公司",
+    "position": [
+      31.836553,
+      117.13926
+    ],
+    "tags": [
+      "通信",
+      "物联网"
+    ],
+    "date": "2016/8/15",
+    "legalPerson": "王洪",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/905d8d993fb2c963f4db8b390a612fd0.html"
+  },
+  {
+    "name": "合肥移远通信技术有限公司",
+    "position": [
+      31.785462,
+      117.250123
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2019/6/25",
+    "legalPerson": "项克理",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/7e450a00c25d54cca7dfc24d5ea51750.html"
+  },
+  {
+    "name": "安徽中科爱电新能源科技有限公司",
+    "position": [
+      31.785711,
+      117.250011
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/3/27",
+    "legalPerson": "谢发强",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/d570c7020f519b8e951914b99d209625.html"
+  },
+  {
+    "name": "安徽三联机器人科技有限公司",
+    "position": [
+      31.828529,
+      117.147398
+    ],
+    "tags": [
+      "通信",
+      "医疗",
+      "检测",
+      "物联网",
+      "机器人",
+      "云计算",
+      "量子",
+      "建筑"
+    ],
+    "date": "2014/8/8",
+    "legalPerson": "金磬",
+    "capital": "5500万元",
+    "link": "https://www.qcc.com/firm/8ab0b7edd81e3278e3b084228bbbb7c1.html"
+  },
+  {
+    "name": "安徽麦游网络科技有限公司",
+    "position": [
+      31.785462,
+      117.250122
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2018/9/21",
+    "legalPerson": "院翔",
+    "capital": "1086.9565万元",
+    "link": "https://www.qcc.com/firm/5ca7f2fc0f44a5ec451f600e6fd3dc45.html"
+  },
+  {
+    "name": "安徽指匀众信息技术有限公司",
+    "position": [
+      31.849306,
+      117.133302
+    ],
+    "tags": [
+      "医疗",
+      "检测"
+    ],
+    "date": "2017/11/14",
+    "legalPerson": "唐健",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/80cfb704cb1005ecdb358fbde75e1196.html"
+  },
+  {
+    "name": "安徽踏极智能科技有限公司",
+    "position": [
+      31.827446,
+      117.139456
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2019/3/22",
+    "legalPerson": "罗正东",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/b935b5c99c23b17291ee7dfcfad62b3d.html"
+  },
+  {
+    "name": "合肥海赛信息科技有限公司",
+    "position": [
+      31.837669,
+      117.13503
+    ],
+    "tags": [
+      "云计算",
+      "建筑",
+      "通信"
+    ],
+    "date": "2018/6/7",
+    "legalPerson": "沈翀",
+    "capital": "778.5556万元",
+    "link": "https://www.qcc.com/firm/576bfa4fb26f5489be63ae86c103cf45.html"
+  },
+  {
+    "name": "安徽奇智科技有限公司",
+    "position": [
+      31.849306,
+      117.133302
+    ],
+    "tags": [
+      "机器人",
+      "医疗"
+    ],
+    "date": "2016/8/25",
+    "legalPerson": "王大年",
+    "capital": "719.3489万元",
+    "link": "https://www.qcc.com/firm/efd70254368754b5e38b25ef9649840e.html"
+  },
+  {
+    "name": "安徽奇智启航科技有限公司",
+    "position": [
+      31.882027,
+      117.320373
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2019/4/16",
+    "legalPerson": "刘保金",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/5c954a9e6628c37aef49857d10f05e66.html"
+  },
+  {
+    "name": "合肥拓谷信息科技有限公司",
+    "position": [
+      31.594641,
+      117.887607
+    ],
+    "tags": [
+      "通信",
+      "物联网"
+    ],
+    "date": "2018/3/30",
+    "legalPerson": "陈文",
+    "capital": "800万元",
+    "link": "https://www.qcc.com/firm/249e4450147e725894e3e2b7a036465c.html"
+  },
+  {
+    "name": "合肥井松智能科技股份有限公司",
+    "position": [
+      31.888211,
+      117.318656
+    ],
+    "tags": [
+      "机器人",
+      "建筑"
+    ],
+    "date": "2007/3/13",
+    "legalPerson": "姚志坚",
+    "capital": "8684.681万元",
+    "link": "https://www.qcc.com/firm/cd06ead2c236d9352930ab33a692704b.html"
+  },
+  {
+    "name": "合肥炬芯智能科技有限公司",
+    "position": [
+      31.886505,
+      117.325871
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2016/12/1",
+    "legalPerson": "刘凤美",
+    "capital": "19200万元",
+    "link": "https://www.qcc.com/firm/794028aab2e7d2ad98673e9e514a9321.html"
+  },
+  {
+    "name": "合肥搬易通科技发展有限公司",
+    "position": [
+      31.888211,
+      117.318656
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2001/7/20",
+    "legalPerson": "韩龙",
+    "capital": "3118万元",
+    "link": "https://www.qcc.com/firm/62d628a4ed0f9a8ce8d3cc8151c48e3c.html"
+  },
+  {
+    "name": "安徽捷迅光电技术有限公司",
+    "position": [
+      31.914878,
+      117.312455
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2006/1/16",
+    "legalPerson": "卢萍",
+    "capital": "3000万元",
+    "link": "https://www.qcc.com/firm/0e373c8c4f776e522a10cfdc3b881c81.html"
+  },
+  {
+    "name": "安徽博微联控科技有限公司",
+    "position": [
+      31.857225,
+      117.246631
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2019/5/20",
+    "legalPerson": "汤辉",
+    "capital": "4559.27万元",
+    "link": "https://www.qcc.com/firm/b60423c9d17199a3fb870abe947c6ac6.html"
+  },
+  {
+    "name": "安徽三祥技术咨询有限公司",
+    "position": [
+      31.821904,
+      117.232672
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2003/9/24",
+    "legalPerson": "马玉平",
+    "capital": "501万元",
+    "link": "https://www.qcc.com/firm/fc4b593264d16c670ca62c6688ae7136.html"
+  },
+  {
+    "name": "安徽斯百德信息技术有限公司",
+    "position": [
+      31.83746,
+      117.265265
+    ],
+    "tags": [
+      "云计算",
+      "物联网"
+    ],
+    "date": "2007/7/30",
+    "legalPerson": "牛永伟",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/e67ffe19f6d4b5368a7b7beb4cb9a969.html"
+  },
+  {
+    "name": "安徽源泽智能科技有限公司",
+    "position": [
+      31.86054,
+      117.150578
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2005/12/13",
+    "legalPerson": "伍茶香",
+    "capital": "1498万元",
+    "link": "https://www.qcc.com/firm/078dff30954d527686776b58bb6afd93.html"
+  },
+  {
+    "name": "安徽中科龙安科技股份有限公司",
+    "position": [
+      31.863939,
+      117.152104
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2015/6/25",
+    "legalPerson": "陈锋",
+    "capital": "3750万元",
+    "link": "https://www.qcc.com/firm/3d5139cdca102939959beefd64ddc902.html"
+  },
+  {
+    "name": "合肥皮诺客网络科技有限公司",
+    "position": [
+      31.853806,
+      117.255766
+    ],
+    "tags": [
+      "芯片",
+      "物联网"
+    ],
+    "date": "2014/4/8",
+    "legalPerson": "顾有良",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/2ffe6db8c207561d22b28893c1e919bb.html"
+  },
+  {
+    "name": "合肥信息技术服务有限公司",
+    "position": [
+      31.851068,
+      117.25971
+    ],
+    "tags": [
+      "机器人",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2003/9/5",
+    "legalPerson": "袁斌",
+    "capital": "1500万元",
+    "link": "https://www.qcc.com/firm/c958b4444e4150066cd4744757172f23.html"
+  },
+  {
+    "name": "安徽诺安信息科技有限公司",
+    "position": [
+      31.862236,
+      117.231277
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2007/6/4",
+    "legalPerson": "朱清平",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/fa410663220c8c52e450ad97807cccd2.html"
+  },
+  {
+    "name": "安徽华元智控科技有限公司",
+    "position": [
+      31.929784,
+      117.266637
+    ],
+    "tags": [
+      "医疗",
+      "建筑"
+    ],
+    "date": "2017/8/28",
+    "legalPerson": "汪浩",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/e149c3e2f40ac982819d4f96860f861a.html"
+  },
+  {
+    "name": "安徽森度科技有限公司",
+    "position": [
+      31.92134,
+      117.316228
+    ],
+    "tags": [
+      "驾驶",
+      "建筑",
+      "无人机"
+    ],
+    "date": "2013/1/24",
+    "legalPerson": "李琳",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/b61cef14bdcdc8ab94e7eb32999616ec.html"
+  },
+  {
+    "name": "安徽亿纵电子科技有限公司",
+    "position": [
+      31.934963,
+      117.264389
+    ],
+    "tags": [
+      "水电",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2015/7/14",
+    "legalPerson": "殷存泽",
+    "capital": "501万元",
+    "link": "https://www.qcc.com/firm/b068a91994ffc7de041ae0e0566abef4.html"
+  },
+  {
+    "name": "合肥奥瑞数控科技有限公司",
+    "position": [
+      31.92572,
+      117.287585
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2005/7/8",
+    "legalPerson": "罗华",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/c016551d8258abcd9472806b383eedd1.html"
+  },
+  {
+    "name": "合肥弘恩机电科技有限公司",
+    "position": [
+      31.941133,
+      117.263354
+    ],
+    "tags": [
+      "医疗",
+      "建筑"
+    ],
+    "date": "2009/4/13",
+    "legalPerson": "程国红",
+    "capital": "3000万元",
+    "link": "https://www.qcc.com/firm/ee6c2bc28e2bccc6b4c3256a4b6eb3fc.html"
+  },
+  {
+    "name": "智慧星光（安徽）科技有限公司",
+    "position": [
+      31.930694,
+      117.264398
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/4/25",
+    "legalPerson": "李青龙",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/e30b0f6c589d1ac44c8d1826505cb623.html"
+  },
+  {
+    "name": "安徽盛偕电子信息科技有限公司",
+    "position": [
+      31.863295,
+      117.3083
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2011/3/30",
+    "legalPerson": "许琳",
+    "capital": "2060万元",
+    "link": "https://www.qcc.com/firm/3fbb5ee8bf3a5326e7e86acdeaa413c2.html"
+  },
+  {
+    "name": "安徽兴博远实信息科技有限公司",
+    "position": [
+      31.868748,
+      117.318031
+    ],
+    "tags": [
+      "建筑",
+      "物联网"
+    ],
+    "date": "2006/6/26",
+    "legalPerson": "张必超",
+    "capital": "3808万元",
+    "link": "https://www.qcc.com/firm/60d573e473943ff9e7e6a167cf02e7fa.html"
+  },
+  {
+    "name": "安徽皖通邮电股份有限公司",
+    "position": [
+      31.885495,
+      117.287749
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "1997/4/16",
+    "legalPerson": "李光",
+    "capital": "20000万元",
+    "link": "https://www.qcc.com/firm/37e312a4eafb864242f7cfe2ead255a4.html"
+  },
+  {
+    "name": "安徽新盾消防设备有限公司",
+    "position": [
+      31.931023,
+      117.267583
+    ],
+    "tags": [
+      "机器人",
+      "检测",
+      "建筑",
+      "无人机"
+    ],
+    "date": "2011/2/21",
+    "legalPerson": "桂永林",
+    "capital": "5100万元",
+    "link": "https://www.qcc.com/firm/7d5324e005630236dd66983545e3f1c0.html"
+  },
+  {
+    "name": "安徽中科有智科技有限公司",
+    "position": [
+      31.812066,
+      117.335773
+    ],
+    "tags": [
+      "医疗",
+      "建筑"
+    ],
+    "date": "2018/9/19",
+    "legalPerson": "佟剑瑞",
+    "capital": "800万元",
+    "link": "https://www.qcc.com/firm/b17e72c5c607124964163a10d7539720.html"
+  },
+  {
+    "name": "合肥市星斗信息科技有限公司",
+    "position": [
+      31.779827,
+      117.361092
+    ],
+    "tags": [
+      "医疗",
+      "建筑",
+      "云计算",
+      "物联网"
+    ],
+    "date": "2011/6/29",
+    "legalPerson": "徐敏",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/3260e4a560394c694d009a4a0fb50ca2.html"
+  },
+  {
+    "name": "安徽今日互联科技有限公司",
+    "position": [
+      31.781675,
+      117.21238
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2013/7/8",
+    "legalPerson": "钱汪胜",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/19a9754317eaab6a8b55fee01f84b403.html"
+  },
+  {
+    "name": "合肥中科博谐科技有限公司",
+    "position": [
+      31.736957,
+      117.15183
+    ],
+    "tags": [
+      "医疗",
+      "检测"
+    ],
+    "date": "2009/12/15",
+    "legalPerson": "马祖长",
+    "capital": "584.6667万元",
+    "link": "https://www.qcc.com/firm/6aee56e6d069ebd24fe042ccd9334a3f.html"
+  },
+  {
+    "name": "安徽大之科技有限公司",
+    "position": [
+      31.80321,
+      117.193391
+    ],
+    "tags": [
+      "生物",
+      "物联网"
+    ],
+    "date": "2016/4/14",
+    "legalPerson": "黎达",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/e3d1f4624fadc2b66f0bcfdd9c196482.html"
+  },
+  {
+    "name": "安徽博诺思信息科技有限公司",
+    "position": [
+      31.828277,
+      117.125057
+    ],
+    "tags": [
+      "检测",
+      "建筑"
+    ],
+    "date": "2014/10/22",
+    "legalPerson": "徐超峰",
+    "capital": "1515.15万元",
+    "link": "https://www.qcc.com/firm/a15aeaad416b1d43a2e0a53fbf79682e.html"
+  },
+  {
+    "name": "合肥泰禾卓海智能科技有限公司",
+    "position": [
+      31.86054,
+      117.150578
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2018/3/29",
+    "legalPerson": "许大红",
+    "capital": "1900万元",
+    "link": "https://www.qcc.com/firm/4de95399a1eadd16f478ef4dfde5cb41.html"
+  },
+  {
+    "name": "合肥品恩智能科技有限公司",
+    "position": [
+      31.827115,
+      117.148303
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2013/4/25",
+    "legalPerson": "刘学科",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/107ccfc8525a13403a38fbeff28caf93.html"
+  },
+  {
+    "name": "合肥马道信息科技有限公司",
+    "position": [
+      31.831763,
+      117.135066
+    ],
+    "tags": [
+      "机器人",
+      "通信",
+      "芯片",
+      "物联网"
+    ],
+    "date": "2015/2/2",
+    "legalPerson": "马冰",
+    "capital": "229.6572万元",
+    "link": "https://www.qcc.com/firm/102f5bb9a85aa7055523f19c901b85aa.html"
+  },
+  {
+    "name": "安徽汉威电子有限公司",
+    "position": [
+      31.795246,
+      117.171108
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2010/11/8",
+    "legalPerson": "蔡昕",
+    "capital": "2800万元",
+    "link": "https://www.qcc.com/firm/043e94611474179e841d397c60b294d5.html"
+  },
+  {
+    "name": "中徽建技术有限公司",
+    "position": [
+      31.824736,
+      117.193827
+    ],
+    "tags": [
+      "云计算",
+      "建筑",
+      "通信"
+    ],
+    "date": "1989/7/11",
+    "legalPerson": "朱居友",
+    "capital": "30346.81万元",
+    "link": "https://www.qcc.com/firm/3b6347833df0794aa181f406f3f6097f.html"
+  },
+  {
+    "name": "合肥萝卜头信息科技有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2015/2/4",
+    "legalPerson": "孔令杰",
+    "capital": "600万元",
+    "link": "https://www.qcc.com/firm/26628af0a7668c721474521563786086.html"
+  },
+  {
+    "name": "合肥宜锐达信息科技有限公司",
+    "position": [
+      31.83688,
+      117.138698
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2016/11/9",
+    "legalPerson": "蒋锐",
+    "capital": "360万元",
+    "link": "https://www.qcc.com/firm/afc43f29dd0809abe0a6c2c80e20668b.html"
+  },
+  {
+    "name": "合肥南橙科技有限公司",
+    "position": [
+      31.822532,
+      117.122129
+    ],
+    "tags": [
+      "生物",
+      "无人机",
+      "物联网",
+      "机器人",
+      "通信"
+    ],
+    "date": "2017/2/28",
+    "legalPerson": "孔令杰",
+    "capital": "200万元",
+    "link": "https://www.qcc.com/firm/36ec5858a1fd0754c56816e788e3c933.html"
+  },
+  {
+    "name": "合肥嘉浓航空科技有限公司",
+    "position": [
+      31.822532,
+      117.122129
+    ],
+    "tags": [
+      "生物",
+      "无人机",
+      "物联网",
+      "机器人",
+      "通信"
+    ],
+    "date": "2017/1/3",
+    "legalPerson": "徐海明",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/df18b67d0f8f077880e7430f1ee85676.html"
+  },
+  {
+    "name": "安徽产业互联数据智能创新中心有限公司",
+    "position": [
+      31.785711,
+      117.250011
+    ],
+    "tags": [
+      "检测",
+      "物联网"
+    ],
+    "date": "2020/7/15",
+    "legalPerson": "吴仲城",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/1f16e9f3add02b664dfe4e0a0142cc38.html"
+  },
+  {
+    "name": "合肥讯图信息科技有限公司",
+    "position": [
+      31.835391,
+      117.137821
+    ],
+    "tags": [
+      "医疗",
+      "视觉",
+      "建筑"
+    ],
+    "date": "2018/5/30",
+    "legalPerson": "汤蕾蕾",
+    "capital": "200万元",
+    "link": "https://www.qcc.com/firm/8c550d60b4557635d0390080d2dc0cbb.html"
+  },
+  {
+    "name": "合肥市信同信息科技有限公司",
+    "position": [
+      31.849489,
+      117.129613
+    ],
+    "tags": [
+      "机器人",
+      "医疗"
+    ],
+    "date": "2013/5/13",
+    "legalPerson": "窦少校",
+    "capital": "1007万元",
+    "link": "https://www.qcc.com/firm/2d337514f6d2548de23bb7b2e8cc75ef.html"
+  },
+  {
+    "name": "合肥图哇科技有限公司",
+    "position": [
+      31.837399,
+      117.136264
+    ],
+    "tags": [
+      "机器人",
+      "云计算",
+      "物联网"
+    ],
+    "date": "2017/3/13",
+    "legalPerson": "田羽",
+    "capital": "172.4065万元",
+    "link": "https://www.qcc.com/firm/c6af2f33dcb301058e3544f447a43a2d.html"
+  },
+  {
+    "name": "安徽时空物联科技有限公司",
+    "position": [
+      31.831613,
+      117.135804
+    ],
+    "tags": [
+      "通信",
+      "物联网"
+    ],
+    "date": "2019/12/3",
+    "legalPerson": "陈成",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/78f74a7c8f6b626f748e87fd38a5e3c7.html"
+  },
+  {
+    "name": "安徽艾睿思智能科技有限公司",
+    "position": [
+      31.840745,
+      117.211135
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/7/7",
+    "legalPerson": "颜天信",
+    "capital": "735.2万元",
+    "link": "https://www.qcc.com/firm/98e363a12aa7c1dc8a6085d8ed40f85f.html"
+  },
+  {
+    "name": "安徽盈川大数据有限公司",
+    "position": [
+      31.829132,
+      117.129244
+    ],
+    "tags": [
+      "医疗",
+      "建筑",
+      "云计算"
+    ],
+    "date": "2018/10/11",
+    "legalPerson": "方明胜",
+    "capital": "50万元",
+    "link": "https://www.qcc.com/firm/c3e9bd5638af43930b9adf7ed71693d2.html"
+  },
+  {
+    "name": "安徽旭辰达电子科技有限公司",
+    "position": [
+      31.827296,
+      117.203707
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2013/10/31",
+    "legalPerson": "谢先运",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/911b796b1f78b73e7794220c37e79203.html"
+  },
+  {
+    "name": "安徽博微广成信息科技有限公司",
+    "position": [
+      31.831067,
+      117.207011
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2003/1/16",
+    "legalPerson": "郑向宏",
+    "capital": "2447.5万元",
+    "link": "https://www.qcc.com/firm/d9966c51a1e7c900d6217dfd4a867fc7.html"
+  },
+  {
+    "name": "安徽省泰岳祥升软件有限公司",
+    "position": [
+      31.882027,
+      117.320373
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2017/5/12",
+    "legalPerson": "程永全",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/e7ce50c481382a7c7b3175a4e6956d63.html"
+  },
+  {
+    "name": "安徽分时科技有限公司",
+    "position": [
+      31.777421,
+      117.276984
+    ],
+    "tags": [
+      "通信",
+      "物联网"
+    ],
+    "date": "2018/10/19",
+    "legalPerson": "樊宗灿",
+    "capital": "1008万元",
+    "link": "https://www.qcc.com/firm/b01f36ef36bf2ac2379c7e732f6e46a4.html"
+  },
+  {
+    "name": "安徽风聘网络科技有限公司",
+    "position": [
+      31.771494,
+      117.229645
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2012/4/5",
+    "legalPerson": "迮乐乐",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/281b430a8a80fbaf5df61fa0c8cf34c8.html"
+  },
+  {
+    "name": "安徽同新源科技有限公司",
+    "position": [
+      31.776569,
+      117.278478
+    ],
+    "tags": [
+      "建筑",
+      "物联网"
+    ],
+    "date": "2016/3/11",
+    "legalPerson": "赵元强",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/cf6876b0349728133b6b9626616d24cd.html"
+  },
+  {
+    "name": "安徽百世伽德安防科技有限公司",
+    "position": [
+      31.784162,
+      117.253069
+    ],
+    "tags": [
+      "通信",
+      "检测"
+    ],
+    "date": "2014/9/3",
+    "legalPerson": "郭兴兵",
+    "capital": "2500万元",
+    "link": "https://www.qcc.com/firm/8199d78be2e1eb14957a6b6ebb2c08a8.html"
+  },
+  {
+    "name": "合肥第一房网络科技有限公司",
+    "position": [
+      31.781841,
+      117.247263
+    ],
+    "tags": [
+      "机器人",
+      "检测",
+      "物联网"
+    ],
+    "date": "2014/3/14",
+    "legalPerson": "王仁华",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/6e3c7182691c020ea260d7c074857034.html"
+  },
+  {
+    "name": "合肥远启信息服务有限公司",
+    "position": [
+      31.792279,
+      117.217279
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2016/8/24",
+    "legalPerson": "苗其龙",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/56fbe2cd41f8668fcd3b1ecaeffffd80.html"
+  },
+  {
+    "name": "安徽辉采科技有限公司",
+    "position": [
+      31.785658,
+      117.250035
+    ],
+    "tags": [
+      "通信",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2002/9/30",
+    "legalPerson": "徐滨",
+    "capital": "5744.490532万元",
+    "link": "https://www.qcc.com/firm/75caff616f95b703f85d63eaafab2f3f.html"
+  },
+  {
+    "name": "安徽省锐凌计量器制造有限公司",
+    "position": [
+      31.261387,
+      117.267271
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2006/4/25",
+    "legalPerson": "段宏亮",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/c0f239f71a6f1dcbd5bc3fdf69c3efeb.html"
+  },
+  {
+    "name": "煤炭工业合肥设计研究院有限责任公司",
+    "position": [
+      31.897062,
+      117.283303
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "1994/9/20",
+    "legalPerson": "孙学军",
+    "capital": "40138.09万元",
+    "link": "https://www.qcc.com/firm/a3d8be4ea2bcdbf5d97cba41bdb970de.html"
+  },
+  {
+    "name": "合肥锐诚信息科技有限公司",
+    "position": [
+      31.859666,
+      117.271801
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2011/9/1",
+    "legalPerson": "孙贤钦",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/54c435bb08b01e820203cca239090291.html"
+  },
+  {
+    "name": "安徽吉码教育科技有限公司",
+    "position": [
+      31.805734,
+      117.22632
+    ],
+    "tags": [
+      "机器人",
+      "通信"
+    ],
+    "date": "2019/12/6",
+    "legalPerson": "吴建峰",
+    "capital": "600万元",
+    "link": "https://www.qcc.com/firm/9d32dd2c9e56dd2749c2449717a79da3.html"
+  },
+  {
+    "name": "安徽中科卓越智能科技有限公司",
+    "position": [
+      31.86054,
+      117.150578
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/6/28",
+    "legalPerson": "陈国峰",
+    "capital": "159万元",
+    "link": "https://www.qcc.com/firm/df66c00f7cfde02066898400332e69ea.html"
+  },
+  {
+    "name": "合肥德通科贸有限公司",
+    "position": [
+      31.856844,
+      117.149712
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2003/4/21",
+    "legalPerson": "应龙",
+    "capital": "400万元",
+    "link": "https://www.qcc.com/firm/6f57e68c816aaac7c8ef6706d8df2a78.html"
+  },
+  {
+    "name": "合肥明源云软件有限公司",
+    "position": [
+      31.824232,
+      117.230568
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2015/8/11",
+    "legalPerson": "李金胜",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/6170202fb82624333d6a2b8cf6a9b7f5.html"
+  },
+  {
+    "name": "合肥学堂信息技术有限公司",
+    "position": [
+      31.86054,
+      117.150578
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2008/3/4",
+    "legalPerson": "姚艳",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/0dc3610dd75e664a15270e3988bbbb2a.html"
+  },
+  {
+    "name": "安徽省通信产业服务有限公司",
+    "position": [
+      31.782773,
+      117.247246
+    ],
+    "tags": [
+      "通信",
+      "检测",
+      "建筑"
+    ],
+    "date": "2007/7/13",
+    "legalPerson": "王越",
+    "capital": "42000万元",
+    "link": "https://www.qcc.com/firm/87fd376660b8353e97544cad3ea05f01.html"
+  },
+  {
+    "name": "合肥悦智信息科技有限公司",
+    "position": [
+      31.866777,
+      117.144872
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2014/5/8",
+    "legalPerson": "秦岭",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/bda2858f51bf8336a43f8b758459fbe9.html"
+  },
+  {
+    "name": "瑞纳智能设备股份有限公司",
+    "position": [
+      31.957197,
+      117.297109
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2008/4/9",
+    "legalPerson": "于大永",
+    "capital": "13608.24万元",
+    "link": "https://www.qcc.com/firm/bf988aacf544fb93da60443c85b817d4.html"
+  },
+  {
+    "name": "安徽鸿蒙机械科技有限公司",
+    "position": [
+      31.097201,
+      118.651777
+    ],
+    "tags": [
+      "机器人",
+      "通信",
+      "物联网"
+    ],
+    "date": "2016/7/3",
+    "legalPerson": "梁晓康",
+    "capital": "7000万元",
+    "link": "https://www.qcc.com/firm/212318fcca2e61da0fbb6918ea920edf.html"
+  },
+  {
+    "name": "安徽青友汇商务服务有限公司",
+    "position": [
+      31.780767,
+      117.354673
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2017/6/15",
+    "legalPerson": "张丽敏",
+    "capital": "600万元",
+    "link": "https://www.qcc.com/firm/1ab4f8db1ab0d91c8a32875c65cfc9cd.html"
+  },
+  {
+    "name": "合肥钛灵信息科技有限公司",
+    "position": [
+      31.811651,
+      117.335584
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2020/5/9",
+    "legalPerson": "夏恩保",
+    "capital": "300万元",
+    "link": "https://www.qcc.com/firm/1a41f2397a10ebcf572d5101eaead117.html"
+  },
+  {
+    "name": "青网科技控股集团有限公司",
+    "position": [
+      31.780767,
+      117.354673
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2014/5/9",
+    "legalPerson": "张丽敏",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/97330d9957e9e8a474b42c7625268b60.html"
+  },
+  {
+    "name": "安徽布拉特智能科技有限公司",
+    "position": [
+      31.771904,
+      117.370209
+    ],
+    "tags": [
+      "视觉",
+      "物联网"
+    ],
+    "date": "2015/4/13",
+    "legalPerson": "张文化",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/ed1936bed154bef1d6db3d41ad53ddda.html"
+  },
+  {
+    "name": "安徽心之声医疗科技有限公司",
+    "position": [
+      31.562798,
+      117.897479
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2017/7/4",
+    "legalPerson": "傅兆吉",
+    "capital": "651.4413万元",
+    "link": "https://www.qcc.com/firm/0f0dc2cf8d7be1acdc6cf2dcc2995704.html"
+  },
+  {
+    "name": "安徽工布智造工业科技有限公司",
+    "position": [
+      31.574266,
+      117.898846
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2017/7/10",
+    "legalPerson": "王继文",
+    "capital": "4608.5397万元",
+    "link": "https://www.qcc.com/firm/4a32a65ab2930fb3781abac54fa3264d.html"
+  },
+  {
+    "name": "安徽瀚尔思生命科技有限公司",
+    "position": [
+      31.562798,
+      117.897479
+    ],
+    "tags": [
+      "医疗",
+      "检测"
+    ],
+    "date": "2018/3/29",
+    "legalPerson": "籍会兰",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/df0ca7c2a8e2f6e8ae3260d737ec7a89.html"
+  },
+  {
+    "name": "安徽慧软科技有限公司",
+    "position": [
+      31.574765,
+      117.899128
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/3/15",
+    "legalPerson": "徐榭",
+    "capital": "4387.5077万元",
+    "link": "https://www.qcc.com/firm/053e1e9590d267bf0365bcb2ea6cf7e0.html"
+  },
+  {
+    "name": "安徽慧视金瞳科技有限公司",
+    "position": [
+      31.575177,
+      117.905613
+    ],
+    "tags": [
+      "通信",
+      "物联网"
+    ],
+    "date": "2016/3/7",
+    "legalPerson": "汪俊锋",
+    "capital": "1200万元",
+    "link": "https://www.qcc.com/firm/d24bf953680198a2519725a6336fb380.html"
+  },
+  {
+    "name": "合肥千带智能科技有限公司",
+    "position": [
+      31.564127,
+      117.893159
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2018/4/16",
+    "legalPerson": "李鹏飞",
+    "capital": "16180万元",
+    "link": "https://www.qcc.com/firm/708d4c7ff70aaf311a2d86a92aec7beb.html"
+  },
+  {
+    "name": "安徽勘派斯导航信息科技有限公司",
+    "position": [
+      31.773539,
+      117.326555
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2017/2/17",
+    "legalPerson": "江珍兰",
+    "capital": "586万元",
+    "link": "https://www.qcc.com/firm/db0b7ce67a48f28674711aef93644471.html"
+  },
+  {
+    "name": "安徽凌壹科技有限公司",
+    "position": [
+      31.811589,
+      117.336471
+    ],
+    "tags": [
+      "医疗",
+      "建筑",
+      "通信"
+    ],
+    "date": "2018/10/19",
+    "legalPerson": "胡星",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/1ce7e598b74dd539d2aea5ebbeac58c6.html"
+  },
+  {
+    "name": "合肥星北航测信息科技有限公司",
+    "position": [
+      31.771904,
+      117.370209
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2014/12/19",
+    "legalPerson": "夏冬寿",
+    "capital": "200万元",
+    "link": "https://www.qcc.com/firm/56d017e30758bdcec733db3508529838.html"
+  },
+  {
+    "name": "安徽临境网络科技有限公司",
+    "position": [
+      31.779319,
+      117.3229
+    ],
+    "tags": [
+      "医疗",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2020/7/27",
+    "legalPerson": "胡宝民",
+    "capital": "505万元",
+    "link": "https://www.qcc.com/firm/f03ef57de8aa610fd0a92f3bcb5ffb42.html"
+  },
+  {
+    "name": "安徽智慧矿山工程设计院有限公司",
+    "position": [
+      31.83107,
+      117.207052
+    ],
+    "tags": [
+      "云计算",
+      "物联网"
+    ],
+    "date": "2020/4/21",
+    "legalPerson": "徐鹤",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/9ec6e06561a7e4f984f0ea8e38192645.html"
+  },
+  {
+    "name": "安徽天德无人机科技有限公司",
+    "position": [
+      31.801413,
+      117.215355
+    ],
+    "tags": [
+      "无人机",
+      "物联网"
+    ],
+    "date": "2014/5/6",
+    "legalPerson": "吴国建",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/fabdcb62681ffead5363033bc4d91e7f.html"
+  },
+  {
+    "name": "合肥文因互联科技有限公司",
+    "position": [
+      31.832138,
+      117.100235
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/9/2",
+    "legalPerson": "鲍捷",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/908329c24b3d43e098730d1b81ff9428.html"
+  },
+  {
+    "name": "合肥迅大信息技术有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2009/10/9",
+    "legalPerson": "刘国强",
+    "capital": "300万元",
+    "link": "https://www.qcc.com/firm/63299b0f68beb37a7e7d6469a89d8fb3.html"
+  },
+  {
+    "name": "安徽省人工智能产业投资发展有限公司",
+    "position": [
+      31.882027,
+      117.320373
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2014/1/28",
+    "legalPerson": "丁增长",
+    "capital": "22867.5万元",
+    "link": "https://www.qcc.com/firm/db477b56d0e4fa42aba456b0e375fd4e.html"
+  },
+  {
+    "name": "合肥凌翔信息科技有限公司",
+    "position": [
+      31.82541,
+      117.202107
+    ],
+    "tags": [
+      "机器人",
+      "云计算",
+      "物联网"
+    ],
+    "date": "2010/6/2",
+    "legalPerson": "李翔",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/0aa7ecf2606342d545b390574cfd0d32.html"
+  },
+  {
+    "name": "合肥图灵北斗科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2020/7/10",
+    "legalPerson": "何文艳",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/b3fa2ce232b8c9821b11f2786b1d1e58.html"
+  },
+  {
+    "name": "安徽成方智能科技有限公司",
+    "position": [
+      31.828811,
+      117.138979
+    ],
+    "tags": [
+      "云计算",
+      "量子",
+      "物联网"
+    ],
+    "date": "2014/5/13",
+    "legalPerson": "夏磊",
+    "capital": "2732.24万元",
+    "link": "https://www.qcc.com/firm/8ebebb10bf3d0ea77afe39143aa285c1.html"
+  },
+  {
+    "name": "安徽科迅教育装备集团有限公司",
+    "position": [
+      31.796672,
+      117.222942
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2010/2/11",
+    "legalPerson": "侯丽霞",
+    "capital": "3000万元",
+    "link": "https://www.qcc.com/firm/45b5320eb9235d89ad9de2b034f1ad6a.html"
+  },
+  {
+    "name": "合肥中交汇能信息科技有限公司",
+    "position": [
+      31.827446,
+      117.139456
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2020/6/16",
+    "legalPerson": "刘伟",
+    "capital": "2200万元",
+    "link": "https://www.qcc.com/firm/5bff99fd072fa1fba6506f5b25ce632d.html"
+  },
+  {
+    "name": "安徽百世嘉新能源科技有限公司",
+    "position": [
+      31.83107,
+      117.207052
+    ],
+    "tags": [
+      "云计算",
+      "物联网"
+    ],
+    "date": "2018/4/8",
+    "legalPerson": "徐鹤",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/ca1efb7097862b98f20751236d0e8210.html"
+  },
+  {
+    "name": "合肥博焱智能科技有限公司",
+    "position": [
+      31.849489,
+      117.129613
+    ],
+    "tags": [
+      "医疗",
+      "建筑",
+      "水电"
+    ],
+    "date": "2010/12/23",
+    "legalPerson": "钱波",
+    "capital": "145.935万元",
+    "link": "https://www.qcc.com/firm/542b804dbf1be9951af6e8589fb87437.html"
+  },
+  {
+    "name": "合肥市清大创新研究院有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/9/1",
+    "legalPerson": "徐礼庆",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/517edf9c71dab950506af7e92d8d984a.html"
+  },
+  {
+    "name": "沐坤科技有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2018/9/3",
+    "legalPerson": "吴燕",
+    "capital": "3404.3万元",
+    "link": "https://www.qcc.com/firm/3f5fb3692889c666b13e1eaf63331c70.html"
+  },
+  {
+    "name": "安徽佰分佰信息技术有限公司",
+    "position": [
+      31.851829,
+      117.198709
+    ],
+    "tags": [
+      "建筑",
+      "物联网"
+    ],
+    "date": "2020/8/11",
+    "legalPerson": "高波",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/40bf9781f49621e7b40089ae49b1fb06.html"
+  },
+  {
+    "name": "安徽英弗伦斯科技有限公司",
+    "position": [
+      31.837287,
+      117.137097
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2012/9/11",
+    "legalPerson": "程刚",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/fae5be4c27003053c3cdb725768e93c7.html"
+  },
+  {
+    "name": "安徽格物智能测控技术有限公司",
+    "position": [
+      31.845527,
+      117.213052
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2020/10/9",
+    "legalPerson": "蒋开金",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/81eba000cd9eba8bedbf1aa91f8bf3f5.html"
+  },
+  {
+    "name": "安徽臻汇科技有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "机器人",
+      "通信",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2021/3/9",
+    "legalPerson": "王世东",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/e3daaed601b43b7fe9108715df709f43.html"
+  },
+  {
+    "name": "合肥华洽信息科技有限公司",
+    "position": [
+      31.8453,
+      117.204129
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/6/28",
+    "legalPerson": "刘国欣",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/9fcd90e317a5739b900090ce71c6e563.html"
+  },
+  {
+    "name": "合肥斑码智能科技有限责任公司",
+    "position": [
+      31.832822,
+      117.097143
+    ],
+    "tags": [
+      "机器人",
+      "云计算",
+      "通信",
+      "物联网"
+    ],
+    "date": "2019/12/23",
+    "legalPerson": "杨柳",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/d7336414e9dff1d7f04514d4ac4dbc30.html"
+  },
+  {
+    "name": "安徽兰科智能科技有限公司",
+    "position": [
+      31.848874,
+      117.202806
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2020/10/22",
+    "legalPerson": "许明月",
+    "capital": "200万元",
+    "link": "https://www.qcc.com/firm/93690a4fb7f379d69e9798a1c8b517e9.html"
+  },
+  {
+    "name": "合肥中科迪宏自动化有限公司",
+    "position": [
+      31.8547,
+      117.205331
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/7/20",
+    "legalPerson": "令狐彬",
+    "capital": "1277.3239万元",
+    "link": "https://www.qcc.com/firm/11b495d43cde94a723f3b6c53f5565c4.html"
+  },
+  {
+    "name": "合肥优恩物联网科技有限公司",
+    "position": [
+      31.777723,
+      117.222412
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2016/1/13",
+    "legalPerson": "阮厚勇",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/a40de596e7d30ff1873e2d238af8491e.html"
+  },
+  {
+    "name": "合肥合滨智能机器人有限公司",
+    "position": [
+      31.776552,
+      117.277263
+    ],
+    "tags": [
+      "机器人",
+      "医疗",
+      "通信"
+    ],
+    "date": "2020/8/26",
+    "legalPerson": "刘振",
+    "capital": "293.0403万元",
+    "link": "https://www.qcc.com/firm/e207d3583471390355802e36d6bb9cb2.html"
+  },
+  {
+    "name": "安徽安诚泽宇环境科技有限公司",
+    "position": [
+      31.849489,
+      117.129613
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2018/3/19",
+    "legalPerson": "聂乾坤",
+    "capital": "600万元",
+    "link": "https://www.qcc.com/firm/414d407b37968cca92408985df294fd3.html"
+  },
+  {
+    "name": "安徽初六信息技术有限公司",
+    "position": [
+      31.848874,
+      117.202806
+    ],
+    "tags": [
+      "通信",
+      "建筑"
+    ],
+    "date": "2017/7/7",
+    "legalPerson": "李青丽",
+    "capital": "1060万元",
+    "link": "https://www.qcc.com/firm/ed2b42617bcfa2e749ca0fd7696b53f3.html"
+  },
+  {
+    "name": "安徽福米信息科技有限公司",
+    "position": [
+      31.826842,
+      117.19425
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/8/31",
+    "legalPerson": "谢凤英",
+    "capital": "600万元",
+    "link": "https://www.qcc.com/firm/71efad9758eabf8f44789304cb80ee2f.html"
+  },
+  {
+    "name": "安徽华典大数据科技有限公司",
+    "position": [
+      31.828277,
+      117.125057
+    ],
+    "tags": [
+      "通信",
+      "量子"
+    ],
+    "date": "2017/6/6",
+    "legalPerson": "邓晓军",
+    "capital": "576.3万元",
+    "link": "https://www.qcc.com/firm/287b78a72096fc372ebbb5d7e3efff32.html"
+  },
+  {
+    "name": "合肥巨阙电子有限公司",
+    "position": [
+      31.865813,
+      117.086873
+    ],
+    "tags": [
+      "检测"
+    ],
+    "date": "2020/4/14",
+    "legalPerson": "赵德喜",
+    "capital": "1031.5789万元",
+    "link": "https://www.qcc.com/firm/b9d6711d2345300f4acdc74286f0f6b1.html"
+  },
+  {
+    "name": "合肥米佑能源有限公司",
+    "position": [
+      31.776569,
+      117.278478
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2017/8/7",
+    "legalPerson": "黄分红",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/e8efcc79f49883cf775109507606dced.html"
+  },
+  {
+    "name": "安徽祺盛智能科技有限公司",
+    "position": [
+      31.808672,
+      117.192248
+    ],
+    "tags": [
+      "机器人",
+      "通信",
+      "建筑"
+    ],
+    "date": "2016/12/23",
+    "legalPerson": "王怀林",
+    "capital": "1500万元",
+    "link": "https://www.qcc.com/firm/0780d26a3e1c895ef7546ec582b710fd.html"
+  },
+  {
+    "name": "合肥炫维教育科技有限公司",
+    "position": [
+      31.835437,
+      117.147534
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2017/5/26",
+    "legalPerson": "吴勇",
+    "capital": "111.1万元",
+    "link": "https://www.qcc.com/firm/10495ca6faba6ca7e1a33e7eb97a4d6a.html"
+  },
+  {
+    "name": "阳光智维科技股份有限公司",
+    "position": [
+      31.836638,
+      117.208181
+    ],
+    "tags": [
+      "检测",
+      "物联网"
+    ],
+    "date": "2017/3/8",
+    "legalPerson": "汪俊",
+    "capital": "9881.5万元",
+    "link": "https://www.qcc.com/firm/0509f51eeb71cf063f8fa794afc48993.html"
+  },
+  {
+    "name": "安徽省一一通信息科技有限公司",
+    "position": [
+      31.802615,
+      117.196247
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2010/7/14",
+    "legalPerson": "刘葆林",
+    "capital": "1175.08813万元",
+    "link": "https://www.qcc.com/firm/dae2ab52357ef01077b78fda0dc69f45.html"
+  },
+  {
+    "name": "合肥永君数码科技有限公司",
+    "position": [
+      31.796672,
+      117.222942
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2006/12/8",
+    "legalPerson": "李波",
+    "capital": "1009万元",
+    "link": "https://www.qcc.com/firm/b79802063fa4f1dd71de75ac7a0ecd8a.html"
+  },
+  {
+    "name": "合肥智能语音创新发展有限公司",
+    "position": [
+      31.785462,
+      117.250122
+    ],
+    "tags": [
+      "语音",
+      "通信"
+    ],
+    "date": "2019/10/9",
+    "legalPerson": "胡国平",
+    "capital": "10000万元",
+    "link": "https://www.qcc.com/firm/d82795c99edb59acc3e992d1c2c850ee.html"
+  },
+  {
+    "name": "中电信量子科技有限公司",
+    "position": [
+      31.827115,
+      117.148303
+    ],
+    "tags": [
+      "通信",
+      "量子"
+    ],
+    "date": "2020/11/6",
+    "legalPerson": "吕品",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/8e22c00b6c1da61e17be339854882339.html"
+  },
+  {
+    "name": "安徽影联云享医疗科技有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2015/10/26",
+    "legalPerson": "鹿晓亮",
+    "capital": "1244.8334万元",
+    "link": "https://www.qcc.com/firm/223536bb2099ef1028403e1a41ae7e99.html"
+  },
+  {
+    "name": "安徽博联自动化工程技术有限公司",
+    "position": [
+      31.824466,
+      117.192069
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2017/3/29",
+    "legalPerson": "陈翠彪",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/78438b31e221bb062d076b024ba8f864.html"
+  },
+  {
+    "name": "安徽星弘烨智能科技有限公司",
+    "position": [
+      31.830196,
+      117.150696
+    ],
+    "tags": [
+      "芯片"
+    ],
+    "date": "2020/1/17",
+    "legalPerson": "丁可",
+    "capital": "555.5556万元",
+    "link": "https://www.qcc.com/firm/d1bcdaa1006b52aeca8263dd1f4c1289.html"
+  },
+  {
+    "name": "合肥疆程技术有限公司",
+    "position": [
+      31.833255,
+      117.093427
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2017/5/24",
+    "legalPerson": "康栋",
+    "capital": "2068.929万元",
+    "link": "https://www.qcc.com/firm/d27559b2f1b6f801fcfacdefbb16fd67.html"
+  },
+  {
+    "name": "合肥豪成智能科技有限公司",
+    "position": [
+      31.833537,
+      117.100707
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2020/12/29",
+    "legalPerson": "时翔",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/c2f9cc957f74e0184d63f6e2bb5d5989.html"
+  },
+  {
+    "name": "合肥岭雁科技有限公司",
+    "position": [
+      31.83688,
+      117.138698
+    ],
+    "tags": [
+      "通信",
+      "物联网"
+    ],
+    "date": "2018/11/28",
+    "legalPerson": "张振辉",
+    "capital": "4708.2145万元",
+    "link": "https://www.qcc.com/firm/4ed7863d2fad0a5dd22cd5d8e5d08c65.html"
+  },
+  {
+    "name": "合肥迈思泰合信息科技有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2010/5/12",
+    "legalPerson": "朱玉芝",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/607c9310ebeb3e3a32fcfa9465f04259.html"
+  },
+  {
+    "name": "合肥辰视机器人科技有限公司",
+    "position": [
+      31.832138,
+      117.100235
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2020/6/2",
+    "legalPerson": "冯良炳",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/45d38c54195cbbbd92e79f6f5511199a.html"
+  },
+  {
+    "name": "安徽中瑞通信科技股份有限公司",
+    "position": [
+      31.784162,
+      117.253069
+    ],
+    "tags": [
+      "通信",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2005/11/30",
+    "legalPerson": "殷宗成",
+    "capital": "1701.9972万元",
+    "link": "https://www.qcc.com/firm/38b8a40746d1e224c62fcf3d945ec83d.html"
+  },
+  {
+    "name": "安徽合华信息科技有限公司",
+    "position": [
+      31.787513,
+      117.221326
+    ],
+    "tags": [
+      "云计算"
+    ],
+    "date": "2016/11/3",
+    "legalPerson": "杨英林",
+    "capital": "1120万元",
+    "link": "https://www.qcc.com/firm/9cfb1358d93ff51ec7074d98ccf47772.html"
+  },
+  {
+    "name": "国汽朴津智能科技（合肥）有限公司",
+    "position": [
+      31.777877,
+      117.276984
+    ],
+    "tags": [
+      "机器人",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2021/3/4",
+    "legalPerson": "周小华",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/103c21a5ed6873e8e553da89f0208d3a.html"
+  },
+  {
+    "name": "安徽域驰智能科技有限公司",
+    "position": [
+      31.780708,
+      117.360145
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2020/7/21",
+    "legalPerson": "刘飞龙",
+    "capital": "1200万元",
+    "link": "https://www.qcc.com/firm/505dae4b35cb81fe923bdb0c2f3a4810.html"
+  },
+  {
+    "name": "安徽中科信创集成服务有限公司",
+    "position": [
+      31.86054,
+      117.150578
+    ],
+    "tags": [
+      "通信",
+      "物联网",
+      "云计算",
+      "芯片",
+      "量子",
+      "建筑"
+    ],
+    "date": "2017/11/3",
+    "legalPerson": "刘丹",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/62d529fb6f627f2a15115af36df2809f.html"
+  },
+  {
+    "name": "合肥德通电驱动系统有限公司",
+    "position": [
+      31.86054,
+      117.150578
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2011/8/2",
+    "legalPerson": "应龙",
+    "capital": "1020万元",
+    "link": "https://www.qcc.com/firm/d922335870511998edbeef3e053f6c2b.html"
+  },
+  {
+    "name": "合肥影领信息科技有限公司",
+    "position": [
+      31.78792,
+      117.231086
+    ],
+    "tags": [
+      "机器人",
+      "医疗",
+      "建筑"
+    ],
+    "date": "2016/8/3",
+    "legalPerson": "董捷",
+    "capital": "900万元",
+    "link": "https://www.qcc.com/firm/992896d79a73eec4a4aaae832af8cbee.html"
+  },
+  {
+    "name": "万申科技股份有限公司",
+    "position": [
+      31.380493,
+      118.49413
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "1999/7/27",
+    "legalPerson": "陈莞青",
+    "capital": "6010万元",
+    "link": "https://www.qcc.com/firm/2ea133eaf893f3abef3725cc93da4f87.html"
+  },
+  {
+    "name": "衡磊科技集团股份有限公司",
+    "position": [
+      31.922622,
+      117.276801
+    ],
+    "tags": [
+      "生物",
+      "机器人",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2007/1/19",
+    "legalPerson": "张有干",
+    "capital": "10100万元",
+    "link": "https://www.qcc.com/firm/a11808ee3cb7651344cac14d5d86c71d.html"
+  },
+  {
+    "name": "安徽同金科技有限公司",
+    "position": [
+      31.783085,
+      117.161612
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2017/5/31",
+    "legalPerson": "尹春笋",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/cbccaf2996fba4766b5f0cf3e88e8910.html"
+  },
+  {
+    "name": "安徽灶甬科技有限公司",
+    "position": [
+      31.882523,
+      117.414717
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2020/8/26",
+    "legalPerson": "王辉",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/6a9f2efe4c60cf7caea0a0f60593a0ed.html"
+  },
+  {
+    "name": "合肥友高物联网标识设备有限公司",
+    "position": [
+      31.774664,
+      117.146366
+    ],
+    "tags": [
+      "视觉",
+      "物联网"
+    ],
+    "date": "2012/8/17",
+    "legalPerson": "陈文正",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/63b44ac28377322403b822a8fcebea66.html"
+  },
+  {
+    "name": "合肥鹏锦智能装备有限公司",
+    "position": [
+      32.011832,
+      117.291773
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2015/9/21",
+    "legalPerson": "谢伟程",
+    "capital": "1200万元",
+    "link": "https://www.qcc.com/firm/9f4d18886c2ebdde521acef770e82320.html"
+  },
+  {
+    "name": "安徽屹盛机电科技有限公司",
+    "position": [
+      31.236376,
+      117.233798
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2018/7/30",
+    "legalPerson": "卢正山",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/d05cabf62aa894d4fa85ad6ea8da3649.html"
+  },
+  {
+    "name": "有方（合肥）医疗科技有限公司",
+    "position": [
+      31.930694,
+      117.264398
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2017/7/12",
+    "legalPerson": "朱磊",
+    "capital": "853.955403万元",
+    "link": "https://www.qcc.com/firm/6ae5d82c391bcf865799990b0207e5d8.html"
+  },
+  {
+    "name": "安徽省米斯蓝家具有限公司",
+    "position": [
+      31.877907,
+      117.82181
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2016/3/24",
+    "legalPerson": "路德贵",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/05d12bbfe58982b358d4ed2be353258f.html"
+  },
+  {
+    "name": "合肥泰晋自动化科技有限公司",
+    "position": [
+      31.736575,
+      117.205891
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2019/3/12",
+    "legalPerson": "李金海",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/c2882762dc0cbd087014da8ecccbedee.html"
+  },
+  {
+    "name": "合肥派腾机械设备科技股份有限公司",
+    "position": [
+      31.768473,
+      117.232676
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2016/11/4",
+    "legalPerson": "许皖晋",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/50cb78499be052a4b996b6b9b61766fb.html"
+  },
+  {
+    "name": "安徽省红云迅联科技有限公司",
+    "position": [
+      31.775868,
+      117.184606
+    ],
+    "tags": [
+      "检测",
+      "建筑",
+      "物联网"
+    ],
+    "date": "2017/12/21",
+    "legalPerson": "岑伟",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/750f00929766d81d7185fbc8bdb9d8ee.html"
+  },
+  {
+    "name": "合肥中控智科机器人有限公司",
+    "position": [
+      31.782606,
+      117.248139
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2018/8/14",
+    "legalPerson": "谢之凤",
+    "capital": "200万元",
+    "link": "https://www.qcc.com/firm/554cfa6d7e8e420b915cd1436b47bf14.html"
+  },
+  {
+    "name": "安徽方隆数字科技有限公司",
+    "position": [
+      31.791463,
+      117.219931
+    ],
+    "tags": [
+      "检测"
+    ],
+    "date": "2020/6/2",
+    "legalPerson": "韩新月",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/7b61cafc4445790a9b79413acb6f4916.html"
+  },
+  {
+    "name": "合肥神牧信息科技有限公司",
+    "position": [
+      31.574266,
+      117.898846
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2020/2/28",
+    "legalPerson": "余琳",
+    "capital": "1030万元",
+    "link": "https://www.qcc.com/firm/505cf36e3e450dba4218c7582302ce88.html"
+  },
+  {
+    "name": "合肥尚左智能科技有限公司",
+    "position": [
+      31.934963,
+      117.264389
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2021/4/12",
+    "legalPerson": "杨敏",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/d4e1782f97525b18b24468a63348874e.html"
+  },
+  {
+    "name": "合肥兰舟智能科技有限公司",
+    "position": [
+      31.925138,
+      117.28403
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2016/4/18",
+    "legalPerson": "孙红娟",
+    "capital": "300万元",
+    "link": "https://www.qcc.com/firm/5db9036df7214fcb351110148c05020f.html"
+  },
+  {
+    "name": "安徽骏图智能科技有限公司",
+    "position": [
+      31.864461,
+      117.153695
+    ],
+    "tags": [
+      "机器人",
+      "通信"
+    ],
+    "date": "2019/9/2",
+    "legalPerson": "戴晶晶",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/1048acecd7b32d2305dd23dc241f275d.html"
+  },
+  {
+    "name": "安徽深核信息技术有限公司",
+    "position": [
+      31.8129,
+      117.135459
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2020/5/9",
+    "legalPerson": "荣营",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/fa99e86afe6f0561ba6c766c55810063.html"
+  },
+  {
+    "name": "安徽天德智能装备制造有限公司",
+    "position": [
+      31.843122,
+      117.051026
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2006/12/7",
+    "legalPerson": "吴国建",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/6fc5396c552b6387a777bc5fb425be04.html"
+  },
+  {
+    "name": "安徽中科超核科技有限公司",
+    "position": [
+      31.860498,
+      117.172681
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2015/2/10",
+    "legalPerson": "洒荣园",
+    "capital": "1500万元",
+    "link": "https://www.qcc.com/firm/d616d8bd39f6701a97005a078f3ce92f.html"
+  },
+  {
+    "name": "合肥高斯智能科技有限公司",
+    "position": [
+      31.83746,
+      117.265265
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2021/5/21",
+    "legalPerson": "沈建宏",
+    "capital": "1500万元",
+    "link": "https://www.qcc.com/firm/25c816b89d854ba610a60479762ca080.html"
+  },
+  {
+    "name": "合肥云通物联科技有限公司",
+    "position": [
+      31.863051,
+      117.149505
+    ],
+    "tags": [
+      "通信",
+      "检测",
+      "物联网",
+      "云计算",
+      "建筑"
+    ],
+    "date": "2019/10/23",
+    "legalPerson": "任士俊",
+    "capital": "800万元",
+    "link": "https://www.qcc.com/firm/83557bcf2280b4780b1a50f099b1dcf4.html"
+  },
+  {
+    "name": "人和数智科技有限公司",
+    "position": [
+      31.861336,
+      117.151515
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2012/10/15",
+    "legalPerson": "朱圣杰",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/d819cc10e60bd2ff71e3af81033da356.html"
+  },
+  {
+    "name": "合肥市峰茂信息科技有限公司",
+    "position": [
+      31.771288,
+      117.370161
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2018/5/29",
+    "legalPerson": "王冠",
+    "capital": "200万元",
+    "link": "https://www.qcc.com/firm/d4093a3be2b5b070750d3277f173dd78.html"
+  },
+  {
+    "name": "安徽逸路安科技股份有限公司",
+    "position": [
+      31.773373,
+      117.343704
+    ],
+    "tags": [
+      "医疗",
+      "通信",
+      "驾驶",
+      "物联网"
+    ],
+    "date": "2013/4/15",
+    "legalPerson": "叶汉云",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/173e9c46eb4abb810f54db3e34c437d4.html"
+  },
+  {
+    "name": "安徽金财智物联科技股份有限公司",
+    "position": [
+      31.863654,
+      117.301469
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2019/3/18",
+    "legalPerson": "罗业存",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/73860167fe639427603202df8629251d.html"
+  },
+  {
+    "name": "合肥国卫软件有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "医疗"
+    ],
+    "date": "2010/8/30",
+    "legalPerson": "汤桂芳",
+    "capital": "3000万元",
+    "link": "https://www.qcc.com/firm/322b8e60d92fb4247f0bbf773ac1e15e.html"
+  },
+  {
+    "name": "合肥明高软件技术有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2010/6/11",
+    "legalPerson": "徐玉红",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/02ccacf8341fc9df07e4e50e9f56da9b.html"
+  },
+  {
+    "name": "中科星图智源科技（安徽）有限公司",
+    "position": [
+      31.831868,
+      117.098124
+    ],
+    "tags": [
+      "通信",
+      "建筑"
+    ],
+    "date": "2021/9/18",
+    "legalPerson": "王黎升",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/2f9069e5cedcddfbe04cf2aec59a6809.html"
+  },
+  {
+    "name": "合肥腾芯微电子有限公司",
+    "position": [
+      31.833537,
+      117.100707
+    ],
+    "tags": [
+      "芯片"
+    ],
+    "date": "2019/10/9",
+    "legalPerson": "习凯",
+    "capital": "313.0435万元",
+    "link": "https://www.qcc.com/firm/30c4823d27cd2b8bd410e0dec5e5ab8b.html"
+  },
+  {
+    "name": "合肥中科融道智能科技有限公司",
+    "position": [
+      31.763923,
+      117.2122
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2021/1/29",
+    "legalPerson": "李耕耘",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/3fdf4bee0934773e20eb5aa5cad13c31.html"
+  },
+  {
+    "name": "安徽方诺智能科技有限公司",
+    "position": [
+      31.83688,
+      117.138698
+    ],
+    "tags": [
+      "通信",
+      "检测",
+      "物联网"
+    ],
+    "date": "2020/4/8",
+    "legalPerson": "何学良",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/a5d16897fb1820f7cd19f6aeb30d9b87.html"
+  },
+  {
+    "name": "安徽智立通科技有限公司",
+    "position": [
+      31.831868,
+      117.098124
+    ],
+    "tags": [
+      "芯片",
+      "建筑"
+    ],
+    "date": "2014/6/12",
+    "legalPerson": "杨开敏",
+    "capital": "2080万元",
+    "link": "https://www.qcc.com/firm/cc60835208cf6390ce60ae12a3ed8350.html"
+  },
+  {
+    "name": "安徽中网创投科技有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "医疗",
+      "通信",
+      "物联网"
+    ],
+    "date": "2016/12/5",
+    "legalPerson": "杨亚东",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/bc25fe02939aadaf1551e0a8c86c230a.html"
+  },
+  {
+    "name": "合肥市智享亿云信息科技有限公司",
+    "position": [
+      31.796672,
+      117.222942
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2016/5/3",
+    "legalPerson": "刘超群",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/528355df5e3d7f6898aade2332f0bf5f.html"
+  },
+  {
+    "name": "安徽中科福瑞科技有限公司",
+    "position": [
+      31.852173,
+      117.209359
+    ],
+    "tags": [
+      "云计算",
+      "检测",
+      "物联网"
+    ],
+    "date": "2017/1/23",
+    "legalPerson": "徐大能",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/09774fbd88f3ee5d47c232b4560654d3.html"
+  },
+  {
+    "name": "合肥小秋智能科技有限公司",
+    "position": [
+      31.844572,
+      117.082378
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2020/7/3",
+    "legalPerson": "张兴伟",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/c0f2048f0c1b9c541cff44502d373782.html"
+  },
+  {
+    "name": "安徽数美信息技术有限责任公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "机器人",
+      "物联网"
+    ],
+    "date": "2017/7/20",
+    "legalPerson": "章灵军",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/64f5c2b242921cb5e094ad8d080caa43.html"
+  },
+  {
+    "name": "安徽简清信息科技有限公司",
+    "position": [
+      31.850594,
+      117.202565
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2019/12/23",
+    "legalPerson": "欧志辉",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/53839ac9cc2163abe6b3f815e721cbd5.html"
+  },
+  {
+    "name": "安徽天才罗宝教育科技有限公司",
+    "position": [
+      31.828277,
+      117.125057
+    ],
+    "tags": [
+      "机器人"
+    ],
+    "date": "2019/6/19",
+    "legalPerson": "朱贵俊",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/21ad3e227d0441fc21a6a88497baf37b.html"
+  },
+  {
+    "name": "合肥云息通信技术有限公司",
+    "position": [
+      31.831868,
+      117.098124
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2019/10/22",
+    "legalPerson": "郭五洲",
+    "capital": "117.6471万元",
+    "link": "https://www.qcc.com/firm/51315cfe7a9acd2de3dff03fe3e3d34f.html"
+  },
+  {
+    "name": "安徽三马信息科技有限公司",
+    "position": [
+      31.854894,
+      117.205958
+    ],
+    "tags": [
+      "检测"
+    ],
+    "date": "2014/3/3",
+    "legalPerson": "莫志强",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/19ded5d49fb273d433850b2c480aca72.html"
+  },
+  {
+    "name": "安徽达途信息科技有限公司",
+    "position": [
+      31.854383,
+      117.209145
+    ],
+    "tags": [
+      "建筑"
+    ],
+    "date": "2020/5/8",
+    "legalPerson": "李宜花",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/6e42715610bebeb43bb3a36c8757c2b4.html"
+  },
+  {
+    "name": "安徽国麒科技有限公司",
+    "position": [
+      31.834862,
+      117.098667
+    ],
+    "tags": [
+      "通信"
+    ],
+    "date": "2021/7/7",
+    "legalPerson": "罗刚",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/d29f4c453980121077337b5e87b37619.html"
+  },
+  {
+    "name": "合肥北极牛科技有限公司",
+    "position": [
+      31.828095,
+      117.205865
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2016/9/26",
+    "legalPerson": "张宝龙",
+    "capital": "2000万元",
+    "link": "https://www.qcc.com/firm/e5cad01396957a1ecaf8c9e99137fd3b.html"
+  },
+  {
+    "name": "中科星图数字地球合肥有限公司",
+    "position": [
+      31.831868,
+      117.098124
+    ],
+    "tags": [
+      "芯片",
+      "物联网"
+    ],
+    "date": "2021/11/16",
+    "legalPerson": "邵宗有",
+    "capital": "150000万元",
+    "link": "https://www.qcc.com/firm/b04d2792b408e42a659bcf54d6b31768.html"
+  },
+  {
+    "name": "安徽尚融信息科技股份有限公司",
+    "position": [
+      31.827468,
+      117.14795
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2021/1/14",
+    "legalPerson": "潘旭东",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/7f5151a971252685c262d9d2d52ce14c.html"
+  },
+  {
+    "name": "合肥黎曼信息科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/2/10",
+    "legalPerson": "张莉莉",
+    "capital": "50万元",
+    "link": "https://www.qcc.com/firm/a50248e187c6d326f1dad48ad5606757.html"
+  },
+  {
+    "name": "中科智云科技有限公司",
+    "position": [
+      31.831868,
+      117.098124
+    ],
+    "tags": [
+      "通信",
+      "建筑"
+    ],
+    "date": "2018/6/25",
+    "legalPerson": "许卫颖",
+    "capital": "6000万元",
+    "link": "https://www.qcc.com/firm/f0dc5a9688a30f9fe0c0c0fb961c274c.html"
+  },
+  {
+    "name": "安徽华图信息科技有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2017/3/27",
+    "legalPerson": "朱少武",
+    "capital": "2500万元",
+    "link": "https://www.qcc.com/firm/b3e4d9d3607249c6b94b08f8c44ec23c.html"
+  },
+  {
+    "name": "安徽瑞轩供应链科技有限公司",
+    "position": [
+      31.831868,
+      117.098124
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2021/1/18",
+    "legalPerson": "张日驹",
+    "capital": "30000万元",
+    "link": "https://www.qcc.com/firm/d324c86db60ae7110697dd86e323ca6e.html"
+  },
+  {
+    "name": "安徽爱学教育科技有限公司",
+    "position": [
+      31.836396,
+      117.143325
+    ],
+    "tags": [
+      "检测"
+    ],
+    "date": "2021/4/26",
+    "legalPerson": "郭超",
+    "capital": "10000万元",
+    "link": "https://www.qcc.com/firm/1442d21afef7cb8e2e055a63d2699856.html"
+  },
+  {
+    "name": "合肥九义软件开发有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2019/6/17",
+    "legalPerson": "薛海生",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/2508bd068f62cc4800b4819e6b18c1ef.html"
+  },
+  {
+    "name": "中科斯欧（合肥）科技股份有限公司",
+    "position": [
+      31.831868,
+      117.098124
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2008/3/18",
+    "legalPerson": "于万钦",
+    "capital": "1466.11万元",
+    "link": "https://www.qcc.com/firm/89d09ce65699fe33f6b49897bef5dc5b.html"
+  },
+  {
+    "name": "安徽中景云创科技有限公司",
+    "position": [
+      31.833196,
+      117.139379
+    ],
+    "tags": [
+      "机器人",
+      "通信",
+      "检测",
+      "建筑"
+    ],
+    "date": "2019/10/29",
+    "legalPerson": "吴常济",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/4920995fdc3bb51003ac82f89c63be0b.html"
+  },
+  {
+    "name": "合肥语记科技有限公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "语音",
+      "物联网"
+    ],
+    "date": "2020/9/25",
+    "legalPerson": "冯疏桐",
+    "capital": "350万元",
+    "link": "https://www.qcc.com/firm/03e81d25adb19410c3f308fdf8f839d0.html"
+  },
+  {
+    "name": "安徽声云智能科技有限公司",
+    "position": [
+      31.828095,
+      117.205865
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2018/1/31",
+    "legalPerson": "班荣军",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/d88794187a920fadbf86c7a7561db5e1.html"
+  },
+  {
+    "name": "安徽翼控网络科技有限公司",
+    "position": [
+      31.832138,
+      117.100235
+    ],
+    "tags": [
+      "云计算",
+      "通信",
+      "芯片",
+      "物联网"
+    ],
+    "date": "2019/2/25",
+    "legalPerson": "朱桂林",
+    "capital": "2050万元",
+    "link": "https://www.qcc.com/firm/177a5da6da8e3e673ea50e8535d84005.html"
+  },
+  {
+    "name": "安徽猫头鹰科技有限公司",
+    "position": [
+      31.82045,
+      117.220354
+    ],
+    "tags": [
+      "医疗",
+      "云计算"
+    ],
+    "date": "2018/11/23",
+    "legalPerson": "史文彬",
+    "capital": "684.7825万元",
+    "link": "https://www.qcc.com/firm/ef4b96ac99f52fb0497d9e53bd1a3123.html"
+  },
+  {
+    "name": "合肥大智慧财汇数据科技有限公司",
+    "position": [
+      31.829443,
+      117.253045
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2021/9/13",
+    "legalPerson": "冯卫强",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/bfced6bd8ab28a73dd6fb57281b44daf.html"
+  },
+  {
+    "name": "安徽年鱼技术有限责任公司",
+    "position": [
+      31.832565,
+      117.136403
+    ],
+    "tags": [
+      "机器人",
+      "云计算",
+      "量子",
+      "物联网"
+    ],
+    "date": "2022/4/24",
+    "legalPerson": "赵龙霄",
+    "capital": "1110万元",
+    "link": "https://www.qcc.com/firm/2ab62af99570029d5f7ff0b2896c45e5.html"
+  },
+  {
+    "name": "合肥辉愈科技有限公司",
+    "position": [
+      31.837521,
+      117.137844
+    ],
+    "tags": [
+      "生物"
+    ],
+    "date": "2021/8/19",
+    "legalPerson": "单杰",
+    "capital": "100万元",
+    "link": "https://www.qcc.com/firm/45cfb44ddb50dad3528e66acf4435427.html"
+  },
+  {
+    "name": "合肥熵简科技有限公司",
+    "position": [
+      31.833537,
+      117.100707
+    ],
+    "tags": [
+      "其他"
+    ],
+    "date": "2022/3/18",
+    "legalPerson": "费斌杰",
+    "capital": "500万元",
+    "link": "https://www.qcc.com/firm/c110fa5799ce914597de883542b4da4e.html"
+  },
+  {
+    "name": "合肥长月科技有限公司",
+    "position": [
+      31.84462,
+      117.20195
+    ],
+    "tags": [
+      "云计算",
+      "物联网"
+    ],
+    "date": "2022/1/26",
+    "legalPerson": "张鹏",
+    "capital": "1000万元",
+    "link": "https://www.qcc.com/firm/e62c8a94cfcce9ec88e82d6d4a4d44f4.html"
+  },
+  {
+    "name": "爱特美德（安徽）智能科技有限公司",
+    "position": [
+      31.833537,
+      117.100707
+    ],
+    "tags": [
+      "物联网"
+    ],
+    "date": "2021/4/30",
+    "legalPerson": "GARY YOU-GANG CHEN",
+    "capital": "5000万元",
+    "link": "https://www.qcc.com/firm/7d2c5e2f0b568ea8639639409c521a3c.html"
+  }
+];
+
+// 显示模态框时
+function showModal() {
+  const modal = document.getElementById('filter-modal');
+  modal.style.display = 'block';
+  modal.setAttribute('aria-hidden', 'false');
+}
+
+// 隐藏模态框时
+function hideModal() {
+  const modal = document.getElementById('filter-modal');
+  modal.style.display = 'none';
+  modal.setAttribute('aria-hidden', 'true');
+}
+
+// 确保在DOM加载后初始化地图
+    document.addEventListener('DOMContentLoaded', function() {
+      var map = L.map('map_709be7e1470feb5f5fb755f5d199a963', {
+        center: [31.82, 117.23],
+        zoom: 7,
+        zoomControl: true,
+        scrollWheelZoom: true,
+       doubleClickZoom: true,
+       touchZoom: true,
+       boxZoom: true
+      });
+      
+     
+      
+      // 强制重绘以防万一
+      setTimeout(function() {
+        map.invalidateSize();
+      }, 100);
+    });
+
+
+
+// 去重处理函数
+function removeDuplicateCompanies(companies) {
+    const uniqueCompanies = [];
+    const seen = new Set();
+    
+    for (const company of companies) {
+        if (!seen.has(company.name)) {
+            seen.add(company.name);
+            uniqueCompanies.push(company);
+        }
+    }
+    
+    return uniqueCompanies;
+}
+
+// 应用去重处理
+var uniqueCompanies = removeDuplicateCompanies(companies);
+
+        // 初始化地图
+        var map = L.map(
+            "map_709be7e1470feb5f5fb755f5d199a963",
+            {
+                center: [31.82, 117.23],
+                crs: L.CRS.EPSG3857,
+                zoom: 7,
+                zoomControl: true,
+                preferCanvas: false
+            }
+        );
+
+        // 添加地图图层
+        var tileLayer = L.tileLayer(
+            "http://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}",
+            {
+                minZoom: 0,
+                maxZoom: 18,
+                maxNativeZoom: 18,
+                noWrap: false,
+                attribution: "高德地图",
+                subdomains: ["1","2","3","4"],
+                detectRetina: false,
+                tms: false,
+                opacity: 1,
+            }
+        ).addTo(map);
+
+        // 创建标记集群
+        var markerCluster = L.markerClusterGroup();
+        
+        // 存储所有标记的数组
+        var allMarkers = [];
+        
+        // 为每个企业创建标记并添加到集群
+        uniqueCompanies.forEach(function(company) {
+            var marker = L.marker(company.position, {
+                tags: company.tags,
+                company: company // 存储完整企业信息
+            });
+            
+            // 创建弹窗内容
+            var popupContent = `
+                <div style="width: 100%; height: 100%;">
+                    <b>${company.name}</b><br>
+                    成立日期: ${company.date}<br>
+                    法定代表人: ${company.legalPerson}<br>
+                    注册资本: ${company.capital}<br>
+                    行业分类: ${company.tags.join(', ')}<br>
+                    <a href="${company.link}" target="_blank">企查查链接</a>
+                </div>
+            `;
+            
+            marker.bindPopup(popupContent);
+            allMarkers.push(marker);
+            markerCluster.addLayer(marker);
+        });
+
+        // 将集群添加到地图
+        map.addLayer(markerCluster);
+
+        // 搜索功能
+       var searchInput = document.querySelector('.search-input');
+        var searchButton = document.querySelector('.search-button');
+        var searchResults = document.querySelector('.search-results');
+        var filterButton = document.querySelector('.filter-button');
+        var filterModal = document.getElementById('filter-modal');
+        var closeModal = document.getElementById('close-modal');
+        var clearFilters = document.getElementById('clear-filters');
+        var applyFilters = document.getElementById('apply-filters');
+        var categoryItems = document.querySelectorAll('.category-item');
+        
+        
+        // 实时搜索
+       searchInput.addEventListener('input', function() {
+            var searchTerm = this.value.toLowerCase();
+            searchResults.innerHTML = '';
+            
+            if (searchTerm === '') {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            var matcheduniqueCompanies = uniqueCompanies.filter(function(company) {
+                return company.name.toLowerCase().includes(searchTerm);
+            });
+            
+            if (matcheduniqueCompanies.length > 0) {
+                matcheduniqueCompanies.forEach(function(company) {
+                    var item = document.createElement('div');
+                    item.className = 'search-result-item';
+                    item.textContent = company.name;
+                    item.addEventListener('click', function() {
+                        searchInput.value = company.name;
+                        searchResults.style.display = 'none';
+                        
+                        // 定位到该企业
+                        var marker = allMarkers.find(function(m) {
+                            return m.options.company.name === company.name;
+                        });
+                        
+                        if (marker) {
+                            map.setView(marker.getLatLng(), 13);
+                            marker.openPopup();
+                        }
+                    });
+                    searchResults.appendChild(item);
+                });
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.innerHTML = '<div class="search-result-item">没有找到匹配的企业</div>';
+                searchResults.style.display = 'block';
+            }
+        });
+        
+       // 搜索按钮点击事件
+         searchButton.addEventListener('click', function() {
+            var query = searchInput.value.toLowerCase();
+            if (query.length === 0) return;
+            
+            var matchedMarkers = allMarkers.filter(function(marker) {
+                return marker.options.company.name.toLowerCase().includes(query);
+            });
+            
+            // 更新集群显示
+            markerCluster.clearLayers();
+            matchedMarkers.forEach(function(marker) {
+                markerCluster.addLayer(marker);
+            });
+            
+            // 如果筛选后有标记，调整地图视图
+            if (matchedMarkers.length > 0) {
+                var group = new L.featureGroup(matchedMarkers);
+                map.fitBounds(group.getBounds(), {padding: [50, 50]});
+            }
+        });
+        
+        
+        // 筛选按钮点击事件
+        filterButton.addEventListener('click', function() {
+            filterModal.style.display = 'block';
+        });
+        
+        // 关闭筛选弹窗
+        closeModal.addEventListener('click', function() {
+            filterModal.style.display = 'none';
+        });
+        
+        // 清空筛选条件
+        clearFilters.addEventListener('click', function() {
+            var checkboxes = filterModal.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = false;
+            });
+        });
+        
+        // 应用筛选条件
+        applyFilters.addEventListener('click', function() {
+            var selectedTags = [];
+            var checkboxes = filterModal.querySelectorAll('input[type="checkbox"]:checked');
+            checkboxes.forEach(function(checkbox) {
+                selectedTags.push(checkbox.value);
+            });
+            
+            if (selectedTags.length === 0) {
+                // 如果没有选择任何筛选条件，显示所有企业
+                markerCluster.clearLayers();
+                allMarkers.forEach(function(marker) {
+                    markerCluster.addLayer(marker);
+                });
+            } else {
+                // 筛选企业
+                var filteredMarkers = allMarkers.filter(function(marker) {
+                    return selectedTags.some(function(tag) {
+                        return marker.options.tags.includes(tag);
+                    });
+                });
+                
+                // 更新地图显示
+                markerCluster.clearLayers();
+                filteredMarkers.forEach(function(marker) {
+                    markerCluster.addLayer(marker);
+                });
+            }
+            
+            filterModal.style.display = 'none';
+        });
+        
+        // 点击模态框外部关闭
+        window.addEventListener('click', function(event) {
+            if (event.target === filterModal) {
+                filterModal.style.display = 'none';
+            }
+        });
+        
+        // 分类筛选功能
+        document.getElementById('apply-filters').addEventListener('click', function() {
+            // 获取所有选中的行业复选框
+            const selectedIndustries = [];
+            const checkboxes = document.querySelectorAll('#filter-modal input[type="checkbox"]:checked');
+            
+            checkboxes.forEach(checkbox => {
+                if (checkbox.id !== 'filter-all') {
+                    selectedIndustries.push(checkbox.value);
+                }
+            });
+
+            // 获取"全部行业"复选框状态
+            const allSelected = document.getElementById('filter-all').checked;
+
+            // 筛选企业
+            const filteredMarkers = allMarkers.filter(marker => {
+                if (allSelected) {
+                    return true; // 如果选择了"全部行业"，显示所有企业
+                }
+                
+                // 检查企业是否包含所有选中的行业标签
+                return selectedIndustries.every(tag => 
+                    marker.options.tags.includes(tag)
+                );
+            });
+
+            // 更新地图显示
+            markerCluster.clearLayers();
+            filteredMarkers.forEach(marker => {
+                markerCluster.addLayer(marker);
+            });
+
+            // 调整地图视图以显示筛选结果
+            if (filteredMarkers.length > 0) {
+                const group = new L.featureGroup(filteredMarkers);
+                map.fitBounds(group.getBounds(), {padding: [50, 50]});
+            }
+
+            // 更新分类统计的显示
+            updateCategoryStats(filteredMarkers);
+            
+            // 关闭筛选弹窗
+            filterModal.style.display = 'none';
+        });
+
+        // 新增函数：更新分类统计
+        function updateCategoryStats(filteredCompanies) {
+            // 统计各行业的数量
+            const industryCounts = {};
+            filteredCompanies.forEach(company => {
+                company.options.tags.forEach(tag => {
+                    if (!industryCounts[tag]) {
+                        industryCounts[tag] = 0;
+                    }
+                    industryCounts[tag]++;
+                });
+            });
+
+            // 更新UI显示
+            const categoryItems = document.querySelectorAll('.category-item');
+            categoryItems.forEach(item => {
+                const category = item.dataset.category;
+                const countSpan = item.querySelector('.category-count');
+                
+                if (category === '全部') {
+                    countSpan.textContent = filteredCompanies.length;
+                } else {
+                    countSpan.textContent = industryCounts[category] || 0;
+                }
+            });
+        }
+
+        // 修改分类筛选功能
+        document.querySelectorAll('.category-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const category = this.dataset.category;
+                
+                // 更新UI状态
+                document.querySelectorAll('.category-item').forEach(ci => {
+                    ci.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                // 筛选企业
+                let filteredMarkers;
+                if (category === '全部') {
+                    filteredMarkers = allMarkers;
+                } else {
+                    filteredMarkers = allMarkers.filter(marker => 
+                        marker.options.tags.includes(category)
+                    );
+                }
+
+                // 更新地图显示
+                markerCluster.clearLayers();
+                filteredMarkers.forEach(marker => {
+                    markerCluster.addLayer(marker);
+                });
+
+                // 调整地图视图
+                if (filteredMarkers.length > 0) {
+                    const group = new L.featureGroup(filteredMarkers);
+                    map.fitBounds(group.getBounds(), {padding: [50, 50]});
+                }
+
+                // 更新筛选弹窗中的选择状态
+                updateFilterModal(category);
+            });
+        });
+
+        // 新增函数：更新筛选弹窗状态
+        function updateFilterModal(selectedCategory) {
+            if (selectedCategory === '全部') {
+                document.getElementById('filter-all').checked = true;
+                document.querySelectorAll('#filter-modal input[type="checkbox"]').forEach(cb => {
+                    if (cb.id !== 'filter-all') cb.checked = false;
+                });
+            } else {
+                document.getElementById('filter-all').checked = false;
+                document.querySelectorAll('#filter-modal input[type="checkbox"]').forEach(cb => {
+                    cb.checked = (cb.value === selectedCategory);
+                });
+            }
+        }
+
+        // 修改"全部行业"复选框的联动逻辑
+        document.getElementById('filter-all').addEventListener('change', function() {
+            if (this.checked) {
+                document.querySelectorAll('#filter-modal input[type="checkbox"]').forEach(cb => {
+                    if (cb.id !== 'filter-all') cb.checked = false;
+                });
+            }
+        });
+
+        // 修改单个行业复选框的联动逻辑
+        document.querySelectorAll('#filter-modal input[type="checkbox"]').forEach(cb => {
+            if (cb.id !== 'filter-all') {
+                cb.addEventListener('change', function() {
+                    if (this.checked) {
+                        document.getElementById('filter-all').checked = false;
+                    }
+                });
+            }
+        });
+
+ // 新增分享功能
+        document.getElementById('copy-link').addEventListener('click', function() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('链接已复制到剪贴板！');
+            });
+        });
+
+        
+
+    </script>
+</body>
+</html>
